@@ -1,64 +1,36 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { CountdownTimer } from "@/components/CountdownTimer";
+import { TimeInput } from "@/components/TimeInput";
+import { TimeFormValues } from "@/types/TimeForm";
+import dynamic from "next/dynamic";
+import { useState } from "react";
+
+const Video = dynamic(
+  () =>
+    import("../components/Video").then((mod) => {
+      return mod.Video;
+    }),
+  {
+    ssr: false,
+  }
+);
 
 export default function Home() {
-  const [outOfTime, setOutOfTime] = useState(false);
-  const [seconds, setSeconds] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [hours, setHours] = useState(0);
-  const [days, setDays] = useState(0);
-
-  useEffect(() => {
-    const MS_PER_DAY = 1000 * 60 * 60 * 24;
-    const MS_PER_HOUR = 1000 * 60 * 60;
-    const MS_PER_MINUTE = 1000 * 60;
-    const MS_PER_SECOND = 1000;
-
-    const target = new Date("09/22/2023 11:33:30");
-
-    const interval = setInterval(() => {
-      const now = new Date();
-      const differnce = target.getTime() - now.getTime();
-
-      const daysDiff = Math.floor(differnce / MS_PER_DAY);
-      const hourDiff = Math.floor((differnce % MS_PER_DAY) / MS_PER_HOUR);
-      const minuteDiff = Math.floor((differnce % MS_PER_HOUR) / MS_PER_MINUTE);
-      const secondsdiff = Math.floor(
-        (differnce % MS_PER_MINUTE) / MS_PER_SECOND
-      );
-
-      if (isOutOfTime(daysDiff, hourDiff, minuteDiff, secondsdiff))
-        setOutOfTime(true);
-      else {
-        setDays(daysDiff);
-        setHours(hourDiff);
-        setMinutes(minuteDiff);
-        setSeconds(secondsdiff);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [days, hours, minutes, seconds]);
-
+  const [time, setTime] = useState<TimeFormValues>({ minutes: 0, seconds: 0 });
   return (
     <div>
-      {!outOfTime ? (
+      {time.minutes === 0 && time.seconds === 0 ? (
         <div>
-          <h1>Days {days}</h1>
-          <h1>Hour {hours}</h1>
-          <h1>Minute {minutes}</h1>
-          <h1>Seconds {seconds}</h1>
+          <div>Enter time </div>
+          <TimeInput onValueChange={setTime} />
         </div>
       ) : (
-        <div> End of time</div>
+        <CountdownTimer minutes={time.minutes} seconds={time.seconds} />
       )}
+      <div>{time.minutes}</div>
+      <div>{time.seconds}</div>
+      <Video />
     </div>
   );
 }
-
-const isOutOfTime = (
-  daysDiff: number,
-  hourDiff: number,
-  minuteDiff: number,
-  secondsDiff: number
-) => daysDiff <= 0 && hourDiff <= 0 && minuteDiff <= 0 && secondsDiff <= 0;
