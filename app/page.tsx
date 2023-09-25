@@ -2,7 +2,6 @@
 
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { TimeInput } from "@/components/TimeInput";
-import { TimeFormValues } from "@/types/TimeForm";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
@@ -17,20 +16,31 @@ const Video = dynamic(
 );
 
 export default function Home() {
-  const [time, setTime] = useState<TimeFormValues>({ minutes: 0, seconds: 0 });
+  const [countdownTime, setCountdownTime] = useState<CountdownTimerProps>({
+    minutes: 0,
+    seconds: 0,
+  });
+  const [done, setDone] = useState<boolean>(false);
+
   return (
     <div>
-      {time.minutes === 0 && time.seconds === 0 ? (
+      {Number(countdownTime.minutes) === 0 &&
+      Number(countdownTime.seconds) === 0 ? (
         <div>
-          <div>Enter time </div>
-          <TimeInput onValueChange={setTime} />
+          <h1>------------</h1>
+          <TimeInput onValueChange={setCountdownTime} />
+          <h1>------------</h1>
         </div>
       ) : (
-        <CountdownTimer minutes={time.minutes} seconds={time.seconds} />
+        <div>
+          <CountdownTimer
+            minutes={countdownTime.minutes}
+            seconds={countdownTime.seconds}
+            setDone={setDone}
+          />
+        </div>
       )}
-      <div>{time.minutes}</div>
-      <div>{time.seconds}</div>
-      <Video />
+      <Video done={done} />
     </div>
   );
 }

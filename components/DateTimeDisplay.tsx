@@ -1,12 +1,16 @@
 import React from "react";
 
-type DisplayProps = {
+interface DateTimeDisplayProps {
   value: string;
   type: string;
   isDanger: boolean;
-};
+}
 
-const DateTimeDisplay = ({ value, type, isDanger }: DisplayProps) => {
+const DateTimeDisplay: React.FC<DateTimeDisplayProps> = ({
+  value,
+  type,
+  isDanger,
+}) => {
   return (
     <div className={isDanger ? "countdown danger" : "countdown"}>
       <p>{value}</p>

@@ -1,28 +1,25 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
-import { TimeFormValues } from "@/types/TimeForm";
 
-interface InputProps {
-  onValueChange: (time: TimeFormValues) => void;
+interface TimeInputProps {
+  onValueChange: (time: CountdownTimerProps) => void;
 }
 
-interface FormErrors {
+interface FormError {
   minutes?: string;
   seconds?: string;
 }
 
-export function TimeInput({ onValueChange }: InputProps) {
-  const initialValues: TimeFormValues = {
+export const TimeInput: React.FC<TimeInputProps> = ({ onValueChange }) => {
+  const initialValues: CountdownTimerProps = {
     minutes: 0,
     seconds: 0,
   };
 
-  const validate = (values: TimeFormValues) => {
-    const errors: Partial<FormErrors> = {};
+  const validate = (values: CountdownTimerProps) => {
+    const errors: Partial<FormError> = {};
 
-    if (!values.minutes) {
-      errors.minutes = "Minutes are required";
-    } else if (isNaN(Number(values.minutes)) || Number(values.minutes) < 0) {
+    if (isNaN(Number(values.minutes)) || Number(values.minutes) < 0) {
       errors.minutes = "Minutes must be 0 or more";
     }
 
@@ -40,8 +37,8 @@ export function TimeInput({ onValueChange }: InputProps) {
   };
 
   const onSubmit = (
-    values: TimeFormValues,
-    { setSubmitting }: FormikHelpers<TimeFormValues>
+    values: CountdownTimerProps,
+    { setSubmitting }: FormikHelpers<CountdownTimerProps>
   ) => {
     onValueChange({ minutes: values.minutes, seconds: values.seconds });
     setSubmitting(false);
@@ -49,7 +46,6 @@ export function TimeInput({ onValueChange }: InputProps) {
 
   return (
     <div>
-      <h2>Submit Minutes & Seconds</h2>
       <Formik
         initialValues={initialValues}
         validate={validate}
@@ -76,4 +72,4 @@ export function TimeInput({ onValueChange }: InputProps) {
       </Formik>
     </div>
   );
-}
+};

@@ -1,8 +1,10 @@
-import { TimeFormValues } from "@/types/TimeForm";
 import { useEffect, useState } from "react";
 
-export function useCountdown(value: TimeFormValues): number[] {
-  const [time, setTime] = useState<TimeFormValues>(value);
+export type CountDownType = [number, number, boolean];
+
+export function useCountdown(value: CountdownTimerProps): CountDownType {
+  const [time, setTime] = useState<CountdownTimerProps>(value);
+  const [done, setDone] = useState<boolean>(false);
 
   useEffect(() => {
     const timerId = setInterval(() => {
@@ -15,6 +17,7 @@ export function useCountdown(value: TimeFormValues): number[] {
           seconds = 59;
         } else {
           clearInterval(timerId);
+          setDone(true);
           return prevTime; // return the same state to prevent unnecessary re-renders
         }
 
@@ -25,7 +28,7 @@ export function useCountdown(value: TimeFormValues): number[] {
     }, 1000);
   }, []);
 
-  return [time.seconds, time.minutes];
+  return [time.seconds, time.minutes, done];
 }
 
 const getDiff = (dateDiffInMS: number) => {

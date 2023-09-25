@@ -1,9 +1,14 @@
 import { useCountdown } from "@/hooks/useCountdown";
-import { TimeFormValues } from "@/types/TimeForm";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 
-export const CountdownTimer: FC<TimeFormValues> = (props) => {
-  const [seconds, minutes] = useCountdown(props);
+export const CountdownTimer: FC<CountdownTimerProps> = (props) => {
+  const [seconds, minutes, done] = useCountdown(props);
+
+  useEffect(() => {
+    if (done === true) {
+      props.setDone!(done);
+    }
+  }, [done]);
 
   return (
     <div>

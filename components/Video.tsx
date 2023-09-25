@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import RecordRTC, { invokeSaveAsDialog } from "recordrtc";
 
-export interface VideoProps {}
+interface VideoProps {
+  done: Boolean;
+}
 
-export const Video = () => {
+export const Video: React.FC<VideoProps> = ({ done }) => {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [blob, setBlob] = useState<Blob | null>(null);
   const [recording, setRecording] = useState(false);
@@ -54,6 +56,15 @@ export const Video = () => {
   useEffect(() => {
     if (recordingRef.current) recordingRef.current.srcObject = stream;
   }, [stream, recordingRef]);
+
+  useEffect(() => {
+    if (done === true) {
+      handleStop();
+      alert("called handle stop");
+    } else {
+      console.log(done);
+    }
+  }, [done]);
 
   return (
     <div>
