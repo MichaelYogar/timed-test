@@ -1,5 +1,5 @@
 interface CountdownTimerProps {
-  minutes: number | string;
-  seconds: number | string;
+  minutes: number;
+  seconds: number;
   setDone?(flag: boolean): void;
 }

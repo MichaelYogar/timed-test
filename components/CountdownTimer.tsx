@@ -8,7 +8,7 @@ export const CountdownTimer: FC<CountdownTimerProps> = (props) => {
     if (done === true) {
       props.setDone!(done);
     }
-  }, [done]);
+  }, [done, props.setDone]);
 
   return (
     <div>
