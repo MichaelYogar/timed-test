@@ -20,19 +20,24 @@ const Page = () => {
         })
       )
       .required("Must have friends")
-      .min(2, "Minimum of 2 question")
-      .max(5, "Maximum of 5 question"),
+      .min(1, "Minimum of 1 question"),
   });
 
   return (
     <Formik
       initialValues={{ forms: [initialValues] }}
       validationSchema={validationSchema}
-      onSubmit={(values) =>
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-        }, 500)
-      }
+      onSubmit={(values) => {
+        fetch("/api/prep", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify(values),
+        })
+          .then((res) => console.log(res))
+          .catch((e) => console.log(e));
+      }}
     >
       {({ values, errors }) => (
         <Form>

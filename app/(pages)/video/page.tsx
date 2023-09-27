@@ -7,7 +7,7 @@ import { ErrorBoundary } from "react-error-boundary";
 
 const Video = dynamic(
   () =>
-    import("../../components/Video").then((mod) => {
+    import("../../../components/Video").then((mod) => {
       return mod.Video;
     }),
   {
