@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import RecordRTC, { invokeSaveAsDialog } from "recordrtc";
+import { RecordRTCPromisesHandler, invokeSaveAsDialog } from "recordrtc";
+import { useErrorBoundary } from "react-error-boundary";
 
 interface VideoProps {
   done: Boolean;
@@ -10,34 +11,58 @@ export const Video: React.FC<VideoProps> = ({ done }) => {
   const [blob, setBlob] = useState<Blob | null>(null);
   const [recording, setRecording] = useState(false);
 
-  const recordRTCRef = useRef<RecordRTC | null>(null);
+  const recordRTCRef = useRef<RecordRTCPromisesHandler | null>(null);
   const replayRef = useRef<HTMLVideoElement | null>(null);
   const recordingRef = useRef<HTMLVideoElement | null>(null);
+
+  const { showBoundary } = useErrorBoundary();
 
   const handleRecording = async () => {
     setBlob(null);
 
-    const cameraStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: {
-        echoCancellation: true,
-      },
-    });
+    let cameraStream = null;
 
-    setStream(cameraStream);
-    recordRTCRef.current = new RecordRTC(cameraStream, {
-      type: "video",
-    });
-    recordRTCRef.current!.startRecording();
-    setRecording(true);
+    try {
+      cameraStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          // TODO: mobile should have support for back camera
+          facingMode: "user",
+        },
+        audio: {
+          echoCancellation: true,
+        },
+      });
+    } catch (e) {
+      showBoundary(e);
+    }
+
+    if (cameraStream) {
+      setStream(cameraStream);
+
+      recordRTCRef.current = new RecordRTCPromisesHandler(cameraStream, {
+        type: "video",
+      });
+
+      recordRTCRef
+        .current!.startRecording()
+        .then(() => console.log("success"))
+        .catch((e) => console.log(e));
+
+      setRecording(true);
+    }
   };
 
   const handleStop = () => {
-    recordRTCRef?.current?.stopRecording(() => {
-      setBlob(recordRTCRef!.current!.getBlob());
-      setStream(null);
-      setRecording(false);
-    });
+    recordRTCRef?.current
+      ?.stopRecording()
+      .then(async () => {
+        setBlob(await recordRTCRef!.current!.getBlob());
+
+        setStream(null);
+
+        setRecording(false);
+      })
+      .catch((e) => console.log(e));
   };
 
   const handlePause = () => recordRTCRef?.current?.pauseRecording();
@@ -58,12 +83,7 @@ export const Video: React.FC<VideoProps> = ({ done }) => {
   }, [stream, recordingRef]);
 
   useEffect(() => {
-    if (done === true) {
-      handleStop();
-      alert("called handle stop");
-    } else {
-      console.log(done);
-    }
+    if (done) handleStop();
   }, [done]);
 
   return (
@@ -79,19 +99,17 @@ export const Video: React.FC<VideoProps> = ({ done }) => {
         <button onClick={handleSave}>save</button>
         {blob && (
           <video
-            autoPlay={true}
             controls
             ref={replayRef}
-            style={{ width: "800", margin: "1em" }}
+            style={{ width: "100%", height: "auto", outline: "none" }}
           />
         )}
         {!blob && recording && (
           <video
-            controls
-            autoPlay
             ref={recordingRef}
             muted={true}
-            style={{ width: "800px", margin: "1em" }}
+            autoPlay={true}
+            style={{ width: "100%", height: "auto", outline: "none" }}
           />
         )}
       </header>

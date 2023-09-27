@@ -3,6 +3,7 @@ import { CountdownTimer } from "@/components/CountdownTimer";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
 const Video = dynamic(
   () =>
@@ -17,6 +18,7 @@ const Video = dynamic(
 const Page = () => {
   const searchParams = useSearchParams();
   const [done, setDone] = useState<boolean>(false);
+
   return (
     <div>
       <CountdownTimer
@@ -24,7 +26,9 @@ const Page = () => {
         seconds={Number(searchParams.get("seconds"))}
         setDone={setDone}
       />
-      <Video done={done} />
+      <ErrorBoundary fallback={<div>Failed to record video</div>}>
+        <Video done={done} />
+      </ErrorBoundary>
     </div>
   );
 };
