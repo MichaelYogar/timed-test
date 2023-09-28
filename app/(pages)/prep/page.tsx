@@ -2,6 +2,7 @@
 import React from "react";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useRouter } from "next/navigation";
 
 const initialValues = {
   question: "",
@@ -10,6 +11,7 @@ const initialValues = {
 };
 
 const Page = () => {
+  const router = useRouter();
   const validationSchema = Yup.object({
     forms: Yup.array()
       .of(
@@ -35,7 +37,10 @@ const Page = () => {
           method: "POST",
           body: JSON.stringify(values),
         })
-          .then((res) => console.log(res))
+          .then((res) => {
+            if (res.status === 201) router.push("/video");
+            else alert("Failed to create form");
+          })
           .catch((e) => console.log(e));
       }}
     >

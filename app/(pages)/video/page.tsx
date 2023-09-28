@@ -1,35 +1,41 @@
 "use client";
-import { CountdownTimer } from "@/components/CountdownTimer";
-import dynamic from "next/dynamic";
-import { useSearchParams } from "next/navigation";
+
+import { Question } from "@/app/components/Question";
+import { Prisma } from "@prisma/client";
 import { useState } from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import useSWR from "swr";
 
-const Video = dynamic(
-  () =>
-    import("../../../components/Video").then((mod) => {
-      return mod.Video;
-    }),
-  {
-    ssr: false,
-  }
-);
+const fetcher = async () => {
+  const result = await fetch("/api/prep", { method: "GET" });
+  return await result.json();
+};
 
-const Page = () => {
-  const searchParams = useSearchParams();
-  const [done, setDone] = useState<boolean>(false);
+const Page: React.FC<Prisma.QuestionCreateInput> = () => {
+  const [index, setIndex] = useState(0);
+  const [questionDone, setQuestionDone] = useState(false);
+  const { data, error, isLoading } = useSWR("/api/user/123", fetcher);
 
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error</p>;
   return (
-    <div>
-      <CountdownTimer
-        minutes={Number(searchParams.get("minutes"))}
-        seconds={Number(searchParams.get("seconds"))}
-        setDone={setDone}
-      />
-      <ErrorBoundary fallback={<div>Failed to record video</div>}>
-        <Video done={done} />
-      </ErrorBoundary>
-    </div>
+    <>
+      <div>
+        {index < data.length && (
+          <Question
+            setQuestionDone={setQuestionDone}
+            key={index}
+            content={data[index].content}
+            duration={data[index].duration}
+          />
+        )}
+      </div>
+      <button
+        disabled={!questionDone}
+        onClick={() => setIndex((prevIndex) => prevIndex + 1)}
+      >
+        Next
+      </button>
+    </>
   );
 };
 

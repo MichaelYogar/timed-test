@@ -1,4 +1,4 @@
-import { useCountdown } from "@/hooks/useCountdown";
+import { useCountdown } from "@/app/hooks/useCountdown";
 import { FC, useEffect } from "react";
 
 export const CountdownTimer: FC<CountdownTimerProps> = (props) => {

@@ -12,7 +12,6 @@ export const Video: React.FC<VideoProps> = ({ done }) => {
   const [recording, setRecording] = useState(false);
 
   const recordRTCRef = useRef<RecordRTCPromisesHandler | null>(null);
-  const replayRef = useRef<HTMLVideoElement | null>(null);
   const recordingRef = useRef<HTMLVideoElement | null>(null);
 
   const { showBoundary } = useErrorBoundary();
@@ -72,13 +71,6 @@ export const Video: React.FC<VideoProps> = ({ done }) => {
   const handleSave = () => blob && invokeSaveAsDialog(blob);
 
   useEffect(() => {
-    if (blob) {
-      const blobSrc = URL.createObjectURL(blob);
-      replayRef!.current!.src = blobSrc;
-    }
-  }, [blob]);
-
-  useEffect(() => {
     if (recordingRef.current) recordingRef.current.srcObject = stream;
   }, [stream, recordingRef]);
 
@@ -97,13 +89,6 @@ export const Video: React.FC<VideoProps> = ({ done }) => {
         <button onClick={handlePause}>pause</button>
         <button onClick={handleResume}>resume</button>
         <button onClick={handleSave}>save</button>
-        {blob && (
-          <video
-            controls
-            ref={replayRef}
-            style={{ width: "100%", height: "auto", outline: "none" }}
-          />
-        )}
         {!blob && recording && (
           <video
             ref={recordingRef}

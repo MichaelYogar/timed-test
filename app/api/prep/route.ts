@@ -7,6 +7,11 @@ interface FormType {
   seconds: number;
 }
 
+export async function GET() {
+  const questions = await prisma.question.findMany();
+  return NextResponse.json(questions, { status: 200 });
+}
+
 export async function POST(request: Request) {
   const { forms } = await request.json();
 
