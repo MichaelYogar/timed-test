@@ -3,6 +3,7 @@ import React from "react";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
+import { PREP_ROUTE } from "@/app/api/prep/route";
 
 const initialValues = {
   question: "",
@@ -30,7 +31,8 @@ const Page = () => {
       initialValues={{ forms: [initialValues] }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        fetch("/api/prep", {
+        alert(JSON.stringify(values));
+        fetch(PREP_ROUTE, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -50,7 +52,7 @@ const Page = () => {
             name="forms"
             render={(arrayHelpers) => (
               <div>
-                {values.forms.map((formItem, index) => (
+                {values.forms.map((_, index) => (
                   <div key={index}>
                     <div>
                       <label htmlFor={`forms.${index}.question`}>

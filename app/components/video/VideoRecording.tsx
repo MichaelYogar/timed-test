@@ -5,11 +5,12 @@ import { addVideo } from "@/lib/idb";
 
 interface VideoProps {
   done: Boolean;
+  setDone(value: boolean): void;
 }
 
-export const VideoRecording: React.FC<VideoProps> = ({ done }) => {
+export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
   const [stream, setStream] = useState<MediaStream | null>(null);
-  const [blob, setBlob] = useState<Blob | null>(null);
+  const [stop, setStop] = useState(false);
   const [recording, setRecording] = useState(false);
 
   const recordRTCRef = useRef<RecordRTCPromisesHandler | null>(null);
@@ -18,8 +19,6 @@ export const VideoRecording: React.FC<VideoProps> = ({ done }) => {
   const { showBoundary } = useErrorBoundary();
 
   const handleRecording = async () => {
-    setBlob(null);
-
     let cameraStream = null;
 
     try {
@@ -56,40 +55,43 @@ export const VideoRecording: React.FC<VideoProps> = ({ done }) => {
     recordRTCRef?.current
       ?.stopRecording()
       .then(async () => {
+        console.log("inside .then()");
         const currentBlob = await recordRTCRef!.current!.getBlob();
-
         await addVideo(currentBlob);
-        setBlob(currentBlob);
 
         setStream(null);
+        setDone(true);
+        setStop(true);
         setRecording(false);
       })
       .catch((e) => console.log(e));
   };
-
-  const handlePause = () => recordRTCRef?.current?.pauseRecording();
-
-  const handleResume = () => recordRTCRef?.current?.resumeRecording();
 
   useEffect(() => {
     if (recordingRef.current) recordingRef.current.srcObject = stream;
   }, [stream, recordingRef]);
 
   useEffect(() => {
-    if (done) handleStop();
+    // Time ran out instead of manually stopping
+    if (done && !stop) handleStop();
   }, [done]);
 
   return (
     <div>
       <header>
-        {recording ? (
-          <button onClick={handleStop}>stop</button>
-        ) : (
-          <button onClick={handleRecording}>start</button>
+        {!stop && (
+          <>
+            {recording ? (
+              <>
+                <button onClick={handleStop}>stop</button>
+              </>
+            ) : (
+              // TODO: Replace start button with a countdown that manually starts
+              <button onClick={handleRecording}>start</button>
+            )}
+          </>
         )}
-        <button onClick={handlePause}>pause</button>
-        <button onClick={handleResume}>resume</button>
-        {!blob && recording && (
+        {recording && (
           <video
             ref={recordingRef}
             muted={true}

@@ -39,7 +39,7 @@ export const Question: React.FC<QuestionProps> = ({
         setDone={setDone}
       />
       <ErrorBoundary fallback={<div>Failed to record video</div>}>
-        <VideoRecording done={done} />
+        <VideoRecording setDone={setDone} done={done} />
       </ErrorBoundary>
     </div>
   );
