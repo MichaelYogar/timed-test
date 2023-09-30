@@ -4,10 +4,10 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-const Video = dynamic(
+const VideoRecording = dynamic(
   () =>
-    import("./Video").then((mod) => {
-      return mod.Video;
+    import("./video/VideoRecording").then((mod) => {
+      return mod.VideoRecording;
     }),
   {
     ssr: false,
@@ -39,7 +39,7 @@ export const Question: React.FC<QuestionProps> = ({
         setDone={setDone}
       />
       <ErrorBoundary fallback={<div>Failed to record video</div>}>
-        <Video done={done} />
+        <VideoRecording done={done} />
       </ErrorBoundary>
     </div>
   );

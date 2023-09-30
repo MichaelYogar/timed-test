@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import { RecordRTCPromisesHandler, invokeSaveAsDialog } from "recordrtc";
+import { RecordRTCPromisesHandler } from "recordrtc";
 import { useErrorBoundary } from "react-error-boundary";
+import { addVideo } from "@/lib/idb";
 
 interface VideoProps {
   done: Boolean;
 }
 
-export const Video: React.FC<VideoProps> = ({ done }) => {
+export const VideoRecording: React.FC<VideoProps> = ({ done }) => {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [blob, setBlob] = useState<Blob | null>(null);
   const [recording, setRecording] = useState(false);
@@ -55,10 +56,12 @@ export const Video: React.FC<VideoProps> = ({ done }) => {
     recordRTCRef?.current
       ?.stopRecording()
       .then(async () => {
-        setBlob(await recordRTCRef!.current!.getBlob());
+        const currentBlob = await recordRTCRef!.current!.getBlob();
+
+        await addVideo(currentBlob);
+        setBlob(currentBlob);
 
         setStream(null);
-
         setRecording(false);
       })
       .catch((e) => console.log(e));
@@ -67,8 +70,6 @@ export const Video: React.FC<VideoProps> = ({ done }) => {
   const handlePause = () => recordRTCRef?.current?.pauseRecording();
 
   const handleResume = () => recordRTCRef?.current?.resumeRecording();
-
-  const handleSave = () => blob && invokeSaveAsDialog(blob);
 
   useEffect(() => {
     if (recordingRef.current) recordingRef.current.srcObject = stream;
@@ -88,7 +89,6 @@ export const Video: React.FC<VideoProps> = ({ done }) => {
         )}
         <button onClick={handlePause}>pause</button>
         <button onClick={handleResume}>resume</button>
-        <button onClick={handleSave}>save</button>
         {!blob && recording && (
           <video
             ref={recordingRef}
