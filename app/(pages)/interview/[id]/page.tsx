@@ -4,6 +4,7 @@ import { QUESTION_ROUTE } from "@/app/api/question/route";
 import { CountdownTimer } from "@/app/components/CountdownTimer";
 import { Question } from "@/app/components/Question";
 import { clearVideos } from "@/lib/idb";
+import { getUrlWithQueryParams } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWRImmutable from "swr/immutable";
@@ -16,11 +17,7 @@ const Page = ({ params }) => {
 
   const fetcher = async () => {
     const result = await fetch(
-      QUESTION_ROUTE +
-        "?" +
-        new URLSearchParams({
-          id: params.id,
-        }),
+      getUrlWithQueryParams(QUESTION_ROUTE, { id: params.id }),
       { method: "GET" }
     );
     return await result.json();

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { INTERVIEW_ROUTE } from "@/app/api/interview/route";
 import useSWR from "swr";
 import Link from "next/link";
+import { getUrlWithQueryParams } from "@/lib/utils";
 
 const initialValues = {
   question: "",
@@ -15,12 +16,10 @@ const initialValues = {
 
 const fetcher = async () => {
   const result = await fetch(
-    INTERVIEW_ROUTE +
-      "?" +
-      new URLSearchParams({
-        type: "true",
-      }),
-    { method: "GET" }
+    getUrlWithQueryParams(INTERVIEW_ROUTE, { type: true }),
+    {
+      method: "GET",
+    }
   );
   return await result.json();
 };

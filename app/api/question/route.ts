@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { getQSParamFromURL } from "@/lib/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 
@@ -14,14 +15,4 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
   });
 
   return NextResponse.json(questions, { status: 200 });
-}
-
-export function getQSParamFromURL(
-  key: string,
-  url: string | undefined
-): string | null {
-  if (!url) return "";
-  const search = new URL(url).search;
-  const urlParams = new URLSearchParams(search);
-  return urlParams.get(key);
 }

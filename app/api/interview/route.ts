@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { getQSParamFromURL } from "@/lib/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
     return { content: form.question, duration, interviewId: interview.id };
   });
 
-  const question = await prisma.question.createMany({
+  await prisma.question.createMany({
     data,
   });
   return NextResponse.json({ id: interview.id }, { status: 201 });
@@ -40,13 +41,3 @@ export async function POST(request: Request) {
 const getMilliSeconds = (minutes: number, seconds: number) => {
   return 1000 * (minutes * 60 + seconds);
 };
-
-export function getQSParamFromURL(
-  key: string,
-  url: string | undefined
-): string | null {
-  if (!url) return "";
-  const search = new URL(url).search;
-  const urlParams = new URLSearchParams(search);
-  return urlParams.get(key);
-}
