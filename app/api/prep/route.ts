@@ -9,14 +9,18 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { forms } = await request.json();
+  const { interviewTitle, forms } = await request.json();
+
+  const interview = await prisma.interview.create({
+    data: { title: interviewTitle },
+  });
 
   const data = forms.map((form) => {
     const duration = getMilliSeconds(
       Number(form.minutes),
       Number(form.seconds)
     );
-    return { content: form.question, duration };
+    return { content: form.question, duration, interviewId: interview.id };
   });
 
   const question = await prisma.question.createMany({

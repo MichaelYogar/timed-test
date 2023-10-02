@@ -7,9 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Interview {
+  id        Int        @id @default(autoincrement())
+  title     String     @db.VarChar(255)
+  createdAt DateTime   @default(now()) @db.Timestamp(6)
+  questions Question[]
+}
+
 model Question {
-  id        Int      @id @default(autoincrement())
-  content   String   @db.VarChar(255)
-  duration  Int
-  createdAt DateTime @default(now()) @db.Timestamp(6)
+  id          Int        @id @default(autoincrement())
+  content     String     @db.VarChar(255)
+  duration    Int
+  createdAt   DateTime   @default(now()) @db.Timestamp(6)
+  Interview   Interview? @relation(fields: [interviewId], references: [id])
+  interviewId Int
 }

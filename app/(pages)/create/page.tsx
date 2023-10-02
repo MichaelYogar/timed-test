@@ -14,6 +14,7 @@ const initialValues = {
 const Page = () => {
   const router = useRouter();
   const validationSchema = Yup.object({
+    interviewTitle: Yup.string().required(),
     forms: Yup.array()
       .of(
         Yup.object({
@@ -28,7 +29,7 @@ const Page = () => {
 
   return (
     <Formik
-      initialValues={{ forms: [initialValues] }}
+      initialValues={{ interviewTitle: "", forms: [initialValues] }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
         fetch(PREP_ROUTE, {
@@ -47,6 +48,9 @@ const Page = () => {
     >
       {({ values, errors }) => (
         <Form>
+          <div>
+            <Field name="interviewTitle" placeholder="Interview title" />
+          </div>
           <FieldArray
             name="forms"
             render={(arrayHelpers) => (
