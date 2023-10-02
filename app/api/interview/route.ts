@@ -1,10 +1,18 @@
 import prisma from "@/lib/prisma";
+import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 
-export const PREP_ROUTE = "/api/prep";
+export const INTERVIEW_ROUTE = "/api/interview/";
 
-export async function GET() {
-  const questions = await prisma.question.findMany();
+export async function GET(req: NextApiRequest, res: NextApiResponse) {
+  const qs = getQSParamFromURL("type", req.url);
+
+  const questions = await prisma.interview.findMany({
+    include: {
+      questions: qs === "true",
+    },
+  });
+
   return NextResponse.json(questions, { status: 200 });
 }
 
@@ -26,9 +34,19 @@ export async function POST(request: Request) {
   const question = await prisma.question.createMany({
     data,
   });
-  return NextResponse.json(question, { status: 201 });
+  return NextResponse.json({ id: interview.id }, { status: 201 });
 }
 
 const getMilliSeconds = (minutes: number, seconds: number) => {
   return 1000 * (minutes * 60 + seconds);
 };
+
+export function getQSParamFromURL(
+  key: string,
+  url: string | undefined
+): string | null {
+  if (!url) return "";
+  const search = new URL(url).search;
+  const urlParams = new URLSearchParams(search);
+  return urlParams.get(key);
+}

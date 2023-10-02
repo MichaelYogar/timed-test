@@ -1,23 +1,29 @@
 "use client";
 
-import { PREP_ROUTE } from "@/app/api/prep/route";
+import { QUESTION_ROUTE } from "@/app/api/question/route";
 import { CountdownTimer } from "@/app/components/CountdownTimer";
 import { Question } from "@/app/components/Question";
 import { clearVideos } from "@/lib/idb";
 import { useState } from "react";
 import useSWR from "swr";
 
-const fetcher = async () => {
-  const result = await fetch(PREP_ROUTE, { method: "GET" });
-  return await result.json();
-};
-
-const Page = () => {
+const Page = ({ params }) => {
   const [index, setIndex] = useState(0);
   const [start, setStart] = useState(false);
   const [questionDone, setQuestionDone] = useState(false);
 
-  const { data, error, isLoading } = useSWR(PREP_ROUTE, fetcher);
+  const fetcher = async () => {
+    const result = await fetch(
+      QUESTION_ROUTE +
+        "?" +
+        new URLSearchParams({
+          id: params.id,
+        }),
+      { method: "GET" }
+    );
+    return await result.json();
+  };
+  const { data, error, isLoading } = useSWR(QUESTION_ROUTE, fetcher);
 
   const handleNext = async () => {
     setIndex((prevIndex) => prevIndex + 1);
