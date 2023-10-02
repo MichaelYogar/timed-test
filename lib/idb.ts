@@ -16,7 +16,6 @@ export async function setupDB() {
 
 export async function addVideo(videoBlob: Blob) {
   const db = await setupDB();
-  console.log(videoBlob);
   return db.add(VIDEO_KEY, { video: videoBlob });
 }
 

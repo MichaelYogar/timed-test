@@ -4,13 +4,15 @@ import { QUESTION_ROUTE } from "@/app/api/question/route";
 import { CountdownTimer } from "@/app/components/CountdownTimer";
 import { Question } from "@/app/components/Question";
 import { clearVideos } from "@/lib/idb";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
 
 const Page = ({ params }) => {
   const [index, setIndex] = useState(0);
   const [start, setStart] = useState(false);
   const [questionDone, setQuestionDone] = useState(false);
+  const router = useRouter();
 
   const fetcher = async () => {
     const result = await fetch(
@@ -23,7 +25,8 @@ const Page = ({ params }) => {
     );
     return await result.json();
   };
-  const { data, error, isLoading } = useSWR(QUESTION_ROUTE, fetcher);
+
+  const { data, error, isLoading } = useSWRImmutable(QUESTION_ROUTE, fetcher);
 
   const handleNext = async () => {
     setIndex((prevIndex) => prevIndex + 1);
@@ -34,6 +37,8 @@ const Page = ({ params }) => {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>{error.toString()}</p>;
+  if (data && index >= data.length) router.push("/result");
+
   if (!start && index < data.length) {
     return (
       <>
@@ -42,7 +47,6 @@ const Page = ({ params }) => {
       </>
     );
   }
-
   return (
     <>
       <div>
@@ -58,15 +62,15 @@ const Page = ({ params }) => {
             ) : (
               <>
                 <h1>{data[index].content}</h1>
-                <CountdownTimer setDone={setStart} seconds={10} minutes={0} />
+                <CountdownTimer setDone={setStart} seconds={3} minutes={0} />
               </>
             )}
+            <button disabled={!questionDone} onClick={handleNext}>
+              Next
+            </button>
           </>
         )}
       </div>
-      <button disabled={!questionDone} onClick={handleNext}>
-        Next
-      </button>
     </>
   );
 };
