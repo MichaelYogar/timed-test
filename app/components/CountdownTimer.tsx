@@ -1,14 +1,17 @@
 import { useCountdown } from "@/app/hooks/useCountdown";
 import { FC, useEffect } from "react";
 
-export const CountdownTimer: FC<CountdownTimerProps> = (props) => {
+export const CountdownTimer: FC<CountdownTimerProps> = ({
+  setDone,
+  ...props
+}) => {
   const [seconds, minutes, done] = useCountdown(props);
 
   useEffect(() => {
     if (done === true) {
-      props.setDone!(done);
+      setDone(done);
     }
-  }, [done, props.setDone]);
+  }, [done, setDone]);
 
   return (
     <div>

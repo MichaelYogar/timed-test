@@ -19,7 +19,6 @@ type QuestionProps = Prisma.QuestionCreateInput & {
 };
 
 export const Question: React.FC<QuestionProps> = ({
-  content,
   duration,
   setQuestionDone,
 }) => {
@@ -32,12 +31,13 @@ export const Question: React.FC<QuestionProps> = ({
 
   return (
     <div>
-      <h1>{content}</h1>
-      <CountdownTimer
-        seconds={Number(result.seconds)}
-        minutes={Number(result.minutes)}
-        setDone={setDone}
-      />
+      {!done && (
+        <CountdownTimer
+          seconds={Number(result.seconds)}
+          minutes={Number(result.minutes)}
+          setDone={setDone}
+        />
+      )}
       <ErrorBoundary fallback={<div>Failed to record video</div>}>
         <VideoRecording setDone={setDone} done={done} />
       </ErrorBoundary>

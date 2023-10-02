@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { RecordRTCPromisesHandler } from "recordrtc";
+import { RecordRTCPromisesHandler, invokeSaveAsDialog } from "recordrtc";
 import { useErrorBoundary } from "react-error-boundary";
 import { addVideo } from "@/lib/idb";
 
@@ -10,6 +10,8 @@ interface VideoProps {
 
 export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [blob, setBlob] = useState<Blob | null>(null);
+
   const [stop, setStop] = useState(false);
   const [recording, setRecording] = useState(false);
 
@@ -18,7 +20,7 @@ export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
 
   const { showBoundary } = useErrorBoundary();
 
-  const handleRecording = async () => {
+  const startRecording = async () => {
     let cameraStream = null;
 
     try {
@@ -32,6 +34,11 @@ export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
         },
       });
     } catch (e) {
+      if (e.name === "NotAllowedError") {
+        alert(
+          "Permission denied. Cannot access audio/video. Please reload page!"
+        );
+      }
       showBoundary(e);
     }
 
@@ -45,7 +52,7 @@ export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
       recordRTCRef
         .current!.startRecording()
         .then(() => console.log("success"))
-        .catch((e) => console.log(e));
+        .catch((e) => alert(e));
 
       setRecording(true);
     }
@@ -55,9 +62,9 @@ export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
     recordRTCRef?.current
       ?.stopRecording()
       .then(async () => {
-        console.log("inside .then()");
         const currentBlob = await recordRTCRef!.current!.getBlob();
         await addVideo(currentBlob);
+        setBlob(currentBlob);
 
         setStream(null);
         setDone(true);
@@ -76,28 +83,24 @@ export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
     if (done && !stop) handleStop();
   }, [done]);
 
+  if (!recording && !stop) startRecording();
+
   return (
     <div>
       <header>
         {!stop && (
           <>
-            {recording ? (
-              <>
-                <button onClick={handleStop}>stop</button>
-              </>
-            ) : (
-              // TODO: Replace start button with a countdown that manually starts
-              <button onClick={handleRecording}>start</button>
-            )}
+            {recording && <button onClick={handleStop}>stop</button>}
+            <video
+              ref={recordingRef}
+              muted={true}
+              autoPlay={true}
+              style={{ width: "100%", height: "auto", outline: "none" }}
+            />
           </>
         )}
-        {recording && (
-          <video
-            ref={recordingRef}
-            muted={true}
-            autoPlay={true}
-            style={{ width: "100%", height: "auto", outline: "none" }}
-          />
+        {blob && (
+          <button onClick={() => invokeSaveAsDialog(blob)}>Save Video</button>
         )}
       </header>
     </div>
