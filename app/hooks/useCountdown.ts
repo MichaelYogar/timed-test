@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 
-export type CountDownType = [number, number, boolean];
+export type CountdownType = [number, number, boolean];
 
-export function useCountdown(value: CountdownTimerProps): CountDownType {
-  const [time, setTime] = useState<CountdownTimerProps>(value);
+interface CountdownProps {
+  seconds: number;
+  minutes: number;
+}
+
+export function useCountdown(value: CountdownProps): CountdownType {
+  const [time, setTime] = useState<CountdownProps>(value);
   const [done, setDone] = useState<boolean>(false);
 
   useEffect(() => {
@@ -21,25 +26,11 @@ export function useCountdown(value: CountdownTimerProps): CountDownType {
           return prevTime; // return the same state to prevent unnecessary re-renders
         }
 
-        console.log(seconds);
         return { minutes, seconds };
       });
-      return () => clearInterval(timerId); // Clear the interval when the component is unmounted
+      return () => clearInterval(timerId);
     }, 1000);
   }, []);
 
   return [time.seconds, time.minutes, done];
 }
-
-const getDiff = (dateDiffInMS: number) => {
-  const MS_PER_HOUR = 1000 * 60 * 60;
-  const MS_PER_MINUTE = 1000 * 60;
-  const MS_PER_SECOND = 1000;
-
-  const minutesDiff = Math.floor((dateDiffInMS % MS_PER_HOUR) / MS_PER_MINUTE);
-  const secondsDiff = Math.floor(
-    (dateDiffInMS % MS_PER_MINUTE) / MS_PER_SECOND
-  );
-
-  return [minutesDiff, secondsDiff];
-};
