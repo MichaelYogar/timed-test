@@ -31,7 +31,6 @@ const Page = () => {
       initialValues={{ forms: [initialValues] }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        alert(JSON.stringify(values));
         fetch(PREP_ROUTE, {
           headers: {
             "Content-Type": "application/json",
@@ -40,7 +39,7 @@ const Page = () => {
           body: JSON.stringify(values),
         })
           .then((res) => {
-            if (res.status === 201) router.push("/video");
+            if (res.status === 201) router.push("/questions");
             else alert("Failed to create form");
           })
           .catch((e) => console.log(e));

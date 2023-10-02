@@ -2,7 +2,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div>
-      <Link href={"/prep"}>Try for free</Link>
+      <Link href={"/create"}>Try for free</Link>
     </div>
   );
 }
