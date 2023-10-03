@@ -7,6 +7,8 @@ import { INTERVIEW_ROUTE } from "@/app/api/interview/route";
 import useSWR from "swr";
 import Link from "next/link";
 import { getUrlWithQueryParams } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { PlusIcon, MinusIcon } from "@radix-ui/react-icons";
 
 const initialValues = {
   question: "",
@@ -115,28 +117,32 @@ const Page = () => {
                         </div>
 
                         {index > 0 && (
-                          <button
+                          <Button
+                            variant="ghost"
                             type="button"
                             onClick={() => arrayHelpers.remove(index)}
                           >
-                            -
-                          </button>
+                            <MinusIcon className="h-4 w-4" />
+                          </Button>
                         )}
-                        <button
+                        <Button
+                          variant="ghost"
                           type="button"
                           onClick={() =>
                             arrayHelpers.insert(index + 1, initialValues)
                           }
                         >
-                          +
-                        </button>
+                          <PlusIcon className="h-4 w-4" />
+                        </Button>
                       </div>
                     ))}
                     {typeof errors.forms === "string" ? (
                       <div>{JSON.stringify(errors.forms)}</div>
                     ) : null}
                     <div>
-                      <button type="submit">Submit</button>
+                      <Button variant="outline" type="submit">
+                        Submit
+                      </Button>
                     </div>
                   </div>
                 )}
@@ -153,7 +159,9 @@ const Page = () => {
               </div>
             );
           })}
-          <button onClick={() => setCreate(true)}>Create</button>
+          <Button variant="outline" onClick={() => setCreate(true)}>
+            Create
+          </Button>
         </div>
       )}
     </>
