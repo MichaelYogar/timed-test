@@ -7,6 +7,15 @@ import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { PlusIcon, MinusIcon } from "@radix-ui/react-icons";
 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
 const fetcher = async () => {
   const result = await fetch(
     getUrlWithQueryParams(INTERVIEW_ROUTE, { type: true }),
@@ -18,27 +27,27 @@ const fetcher = async () => {
 };
 
 type Inputs = {
-  array: {
+  title: string;
+  questions: {
     question: string;
+    minutes: number;
     seconds: number;
   }[];
 };
 
 const Page = () => {
   const { data, error, isLoading } = useSWR(INTERVIEW_ROUTE, fetcher);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    control,
-  } = useForm<Inputs>({
+  const form = useForm<Inputs>({
     defaultValues: {
-      array: [{ question: "hello", seconds: 1 }],
+      title: "hello",
+      questions: [{ question: "hello", minutes: 0, seconds: 0 }],
     },
   });
 
+  const { control } = form;
+
   const { fields, append, remove } = useFieldArray<Inputs>({
-    name: "array",
+    name: "questions",
     control,
   });
   const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
@@ -47,46 +56,97 @@ const Page = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {fields.map((field, index) => {
-        return (
-          <div key={field.id}>
-            <label htmlFor="question">Question: </label>
-            <input
-              id="question"
-              {...register(`array.${index}.question`)}
-            ></input>
-            <label htmlFor="seconds">Seconds: </label>
-            <input
-              id="seconds"
-              type="number"
-              {...register(`array.${index}.seconds`, {
-                valueAsNumber: true,
-                min: 0,
-                max: 59,
-              })}
-            ></input>
-            <Button
-              variant="outline"
-              type="button"
-              onClick={() => append({ question: "new question", seconds: 0 })}
-            >
-              <PlusIcon />
-            </Button>
-            {index > 0 && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => remove(index)}
-              >
-                <MinusIcon />
-              </Button>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="flex">
+          <FormField
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Interview title</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+              </FormItem>
             )}
-          </div>
-        );
-      })}
-      <button>Submit</button>
-    </form>
+          />
+        </div>
+        {fields.map((field, index) => {
+          return (
+            <div className="flex items-end mt-4" key={field.id}>
+              <div>{index + 1}</div>
+              <FormField
+                control={control}
+                name={`questions.${index}.question`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Question: </FormLabel>
+                    <FormControl>
+                      <Input required className="w-fit" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`questions.${index}.minutes`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Minutes: </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="w-fit"
+                        type="number"
+                        min={0}
+                        max={100}
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`questions.${index}.seconds`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Seconds: </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="w-fit"
+                        type="number"
+                        min={0}
+                        max={100}
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() =>
+                  append({ question: "new question", minutes: 0, seconds: 0 })
+                }
+              >
+                <PlusIcon />
+              </Button>
+              {index > 0 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => remove(index)}
+                >
+                  <MinusIcon />
+                </Button>
+              )}
+            </div>
+          );
+        })}
+        <Button>Submit</Button>
+      </form>
+    </Form>
   );
 };
 
