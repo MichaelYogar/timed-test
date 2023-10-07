@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { INTERVIEW_ROUTE } from "@/app/api/interview/route";
-import useSWR from "swr";
 import { getUrlWithQueryParams } from "@/lib/utils";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,6 +18,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Interview } from "@prisma/client";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { InterviewForm } from "@/app/components/InterviewForm";
+import useSWRImmutable from "swr/immutable";
 
 const fetcher = async (): Promise<Interview[]> => {
   const result = await fetch(
@@ -40,9 +42,17 @@ type Inputs = {
 };
 
 const Page = () => {
-  const { data, error, isLoading } = useSWR(INTERVIEW_ROUTE, fetcher);
+  const { data, error, isLoading } = useSWRImmutable(INTERVIEW_ROUTE, fetcher);
   const [create, setCreate] = useState(false);
+  const router = useRouter();
 
+  const MIN_VALUE = 1;
+  const MAX_VALUE = 10;
+  const initialValue = {
+    question: "",
+    minutes: 0,
+    seconds: 0,
+  };
   const validationSchema = Yup.object({
     title: Yup.string()
       .required()
@@ -58,15 +68,16 @@ const Page = () => {
           minutes: Yup.number().min(0).max(60).required("Required"),
         })
       )
-      .required("Must have friends")
-      .min(2, "Minimum of 1 question"),
+      .required("Must have questions")
+      .min(MIN_VALUE, `Minimum of ${MIN_VALUE} question`)
+      .max(MAX_VALUE, `Maximumof ${MAX_VALUE} question`),
   });
 
   const form = useForm<Inputs>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      title: "hello",
-      questions: [{ question: "hello", minutes: 0, seconds: 0 }],
+      title: "",
+      questions: [initialValue],
     },
   });
 
@@ -78,12 +89,19 @@ const Page = () => {
   });
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log(data);
-    if (create) {
-      // save data
+    const response = await fetch(INTERVIEW_ROUTE, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (response.status !== 201) {
+      alert("Failed to create interview");
+      return;
     }
-
-    // push title
+    const result = await response.json();
+    router.push("/interview/" + result.id);
   };
 
   if (isLoading) return <div>loading...</div>;
@@ -92,11 +110,7 @@ const Page = () => {
   return (
     <div>
       {!create ? (
-        data ? (
-          data.map((item, i) => <div key={i}>{item.title}</div>)
-        ) : (
-          <div> No current interviews </div>
-        )
+        <InterviewForm />
       ) : (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -169,20 +183,16 @@ const Page = () => {
                       </FormItem>
                     )}
                   />
-                  <Button
-                    variant="outline"
-                    type="button"
-                    onClick={() =>
-                      append({
-                        question: "new question",
-                        minutes: 0,
-                        seconds: 0,
-                      })
-                    }
-                  >
-                    <PlusIcon />
-                  </Button>
-                  {index > 0 && (
+                  {index <= MAX_VALUE && (
+                    <Button
+                      variant="outline"
+                      type="button"
+                      onClick={() => append(initialValue)}
+                    >
+                      <PlusIcon />
+                    </Button>
+                  )}
+                  {index >= MIN_VALUE && (
                     <Button
                       type="button"
                       variant="outline"
@@ -195,14 +205,18 @@ const Page = () => {
               );
             })}
             <p>{form.formState.errors.questions?.root?.message}</p>
-            <Button>Submit</Button>
+            <Button variant="ghost">Submit</Button>
           </form>
         </Form>
       )}
       {!create ? (
-        <Button onClick={() => setCreate(true)}>Create</Button>
+        <Button variant="link" onClick={() => setCreate(true)}>
+          Create
+        </Button>
       ) : (
-        <Button onClick={() => setCreate(false)}>Back</Button>
+        <Button variant="link" onClick={() => setCreate(false)}>
+          Back
+        </Button>
       )}
     </div>
   );

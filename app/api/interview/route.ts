@@ -8,28 +8,30 @@ export const INTERVIEW_ROUTE = "/api/interview/";
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
   const qs = getQSParamFromURL("type", req.url);
 
-  const questions = await prisma.interview.findMany({
+  const interviews = await prisma.interview.findMany({
     include: {
       questions: qs === "true",
     },
   });
 
-  return NextResponse.json(questions, { status: 200 });
+  return NextResponse.json(interviews, { status: 200 });
 }
 
 export async function POST(request: Request) {
-  const { interviewTitle, forms } = await request.json();
+  const { title, questions } = await request.json();
+  console.log(title);
+  console.log(questions);
 
   const interview = await prisma.interview.create({
-    data: { title: interviewTitle },
+    data: { title },
   });
 
-  const data = forms.map((form) => {
+  const data = questions.map((item) => {
     const duration = getMilliSeconds(
-      Number(form.minutes),
-      Number(form.seconds)
+      Number(item.minutes),
+      Number(item.seconds)
     );
-    return { content: form.question, duration, interviewId: interview.id };
+    return { content: item.question, duration, interviewId: interview.id };
   });
 
   await prisma.question.createMany({

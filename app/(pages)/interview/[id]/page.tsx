@@ -7,7 +7,7 @@ import { clearVideos } from "@/lib/idb";
 import { getUrlWithQueryParams } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import useSWRImmutable from "swr/immutable";
+import useSWR from "swr";
 
 const Page = ({ params }) => {
   const [index, setIndex] = useState(0);
@@ -23,7 +23,7 @@ const Page = ({ params }) => {
     return await result.json();
   };
 
-  const { data, error, isLoading } = useSWRImmutable(QUESTION_ROUTE, fetcher);
+  const { data, error, isLoading } = useSWR(QUESTION_ROUTE, fetcher);
 
   const handleNext = async () => {
     setIndex((prevIndex) => prevIndex + 1);
