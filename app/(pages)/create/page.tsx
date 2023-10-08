@@ -1,11 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { INTERVIEW_ROUTE } from "@/app/api/interview/route";
 import { getUrlWithQueryParams } from "@/lib/utils";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Yup from "../../../lib/yup-extended";
-import { PlusIcon, MinusIcon } from "@radix-ui/react-icons";
+import { PlusIcon, MinusIcon, ArrowLeftIcon } from "@radix-ui/react-icons";
 
 import {
   Form,
@@ -18,9 +18,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Interview } from "@prisma/client";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import { InterviewForm } from "@/app/components/InterviewForm";
-import useSWRImmutable from "swr/immutable";
+import useSWR, { mutate } from "swr";
+import Link from "next/link";
 
 const fetcher = async (): Promise<Interview[]> => {
   const result = await fetch(
@@ -42,9 +42,7 @@ type Inputs = {
 };
 
 const Page = () => {
-  const { data, error, isLoading } = useSWRImmutable(INTERVIEW_ROUTE, fetcher);
-  const [create, setCreate] = useState(false);
-  const router = useRouter();
+  const { data, error, isLoading } = useSWR(INTERVIEW_ROUTE, fetcher);
 
   const MIN_VALUE = 1;
   const MAX_VALUE = 10;
@@ -100,124 +98,130 @@ const Page = () => {
       alert("Failed to create interview");
       return;
     }
-    const result = await response.json();
-    router.push("/interview/" + result.id);
+    mutate(INTERVIEW_ROUTE);
   };
 
   if (isLoading) return <div>loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
-    <div>
-      {!create ? (
+    <div className="container">
+      <Link href="/">
+        <ArrowLeftIcon
+          style={{ width: "32px", height: "32px", marginBottom: "4px" }}
+        />
+      </Link>
+      <div className="grid md:grid-cols-2">
+        <div>
+          <h1>Create Interview</h1>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="flex">
+                <FormField
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Interview title</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              {fields.map((field, index) => {
+                return (
+                  <div
+                    className="flex lg:flex-row flex-col gap-1 lg:items-end items-start flex-wrap"
+                    key={field.id}
+                  >
+                    <FormField
+                      control={control}
+                      name={`questions.${index}.question`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Question {index + 1}: </FormLabel>
+                          <FormControl>
+                            <Input required className="w-fit" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name={`questions.${index}.minutes`}
+                      render={({ field }) => (
+                        <div className="flex justify-start items-start">
+                          <FormItem>
+                            <FormLabel>Minutes: </FormLabel>
+                            <FormControl>
+                              <Input
+                                className="w-fit"
+                                type="number"
+                                min={0}
+                                max={100}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        </div>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name={`questions.${index}.seconds`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Seconds: </FormLabel>
+                          <FormControl>
+                            <Input
+                              className="w-fit"
+                              type="number"
+                              min={0}
+                              max={100}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex gap-1">
+                      {index <= MAX_VALUE && (
+                        <Button
+                          variant="outline"
+                          type="button"
+                          onClick={() => append(initialValue)}
+                        >
+                          <PlusIcon />
+                        </Button>
+                      )}
+                      {index >= MIN_VALUE && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => remove(index)}
+                        >
+                          <MinusIcon />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+              <p>{form.formState.errors.questions?.root?.message}</p>
+              <Button className="mt-4" variant="outline">
+                Create
+              </Button>
+            </form>
+          </Form>
+        </div>
+
         <InterviewForm />
-      ) : (
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex">
-              <FormField
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Interview title</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            {fields.map((field, index) => {
-              return (
-                <div className="flex items-end mt-4" key={field.id}>
-                  <div>{index + 1}</div>
-                  <FormField
-                    control={control}
-                    name={`questions.${index}.question`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Question: </FormLabel>
-                        <FormControl>
-                          <Input required className="w-fit" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={control}
-                    name={`questions.${index}.minutes`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Minutes: </FormLabel>
-                        <FormControl>
-                          <Input
-                            className="w-fit"
-                            type="number"
-                            min={0}
-                            max={100}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={control}
-                    name={`questions.${index}.seconds`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Seconds: </FormLabel>
-                        <FormControl>
-                          <Input
-                            className="w-fit"
-                            type="number"
-                            min={0}
-                            max={100}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  {index <= MAX_VALUE && (
-                    <Button
-                      variant="outline"
-                      type="button"
-                      onClick={() => append(initialValue)}
-                    >
-                      <PlusIcon />
-                    </Button>
-                  )}
-                  {index >= MIN_VALUE && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => remove(index)}
-                    >
-                      <MinusIcon />
-                    </Button>
-                  )}
-                </div>
-              );
-            })}
-            <p>{form.formState.errors.questions?.root?.message}</p>
-            <Button variant="ghost">Submit</Button>
-          </form>
-        </Form>
-      )}
-      {!create ? (
-        <Button variant="link" onClick={() => setCreate(true)}>
-          Create
-        </Button>
-      ) : (
-        <Button variant="link" onClick={() => setCreate(false)}>
-          Back
-        </Button>
-      )}
+      </div>
     </div>
   );
 };
