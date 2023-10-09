@@ -21,6 +21,9 @@ import { Button } from "@/components/ui/button";
 import { InterviewForm } from "@/app/components/InterviewForm";
 import useSWR, { mutate } from "swr";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { options } from "@/app/api/auth/[...nextauth]/nextAuthOptions";
+import { useSession } from "next-auth/react";
 
 const fetcher = async (): Promise<Interview[]> => {
   const result = await fetch(
@@ -43,6 +46,7 @@ type Inputs = {
 
 const Page = () => {
   const { data, error, isLoading } = useSWR(INTERVIEW_ROUTE, fetcher);
+  const { data: session, status } = useSession();
 
   const MIN_VALUE = 1;
   const MAX_VALUE = 10;
@@ -100,9 +104,12 @@ const Page = () => {
     }
     mutate(INTERVIEW_ROUTE);
   };
-
   if (isLoading) return <div>loading...</div>;
   if (error) return <div>{error}</div>;
+
+  if (status === "authenticated" && session) {
+    return <p>Signed in as {session.user?.email}</p>;
+  }
 
   return (
     <div className="container">
