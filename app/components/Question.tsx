@@ -1,8 +1,7 @@
 import { CountdownTimer } from "@/app/components/CountdownTimer";
 import { Prisma } from "@prisma/client";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import { useState } from "react";
 
 const VideoRecording = dynamic(
   () =>
@@ -14,36 +13,40 @@ const VideoRecording = dynamic(
   }
 );
 
-type QuestionProps = Prisma.QuestionCreateInput & {
-  setQuestionDone(value: boolean): void;
-};
+type QuestionProps =
+  | Prisma.QuestionCreateInput & { stream: MediaStream | null };
 
 export const Question: React.FC<QuestionProps> = ({
+  content,
   duration,
-  setQuestionDone,
+  stream,
 }) => {
   const [done, setDone] = useState<boolean>(false);
   const result = parseDuration(duration);
 
-  useEffect(() => {
-    if (done) setQuestionDone(done);
-  }, [done]);
-
   return (
     <div>
       {!done && (
-        <CountdownTimer
-          seconds={Number(result.seconds)}
-          minutes={Number(result.minutes)}
-          setDone={setDone}
-        />
+        <div className="mb-4">
+          <CountdownTimer
+            seconds={Number(result.seconds)}
+            minutes={Number(result.minutes)}
+            setDone={setDone}
+          />
+        </div>
       )}
-      <ErrorBoundary fallback={<div>Failed to record video</div>}>
-        <VideoRecording setDone={setDone} done={done} />
-      </ErrorBoundary>
+      <div className="container flex justify-center">
+        <VideoRecording
+          stream={stream}
+          content={content}
+          setDone={setDone}
+          done={done}
+        />
+      </div>
     </div>
   );
 };
+
 function parseDuration(milliseconds: number) {
   const totalSeconds = Math.floor(milliseconds / 1000);
   const minutes = Math.floor(totalSeconds / 60);
