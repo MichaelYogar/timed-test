@@ -8,7 +8,9 @@ const page = () => {
       <h3>About</h3>
       <div className="flex justify-end">
         <Button variant="link" asChild>
-          <Link href="/create">Try me</Link>
+          <Link href="/create">
+            <div className="text-lg font-semibold">Demo</div>
+          </Link>
         </Button>
       </div>
       <div className="mb-8">Currently at prototype stage.</div>
@@ -19,7 +21,9 @@ const page = () => {
       </blockquote>
       <Separator />
       <div className="flex justify-center my-2">
-        <a>Github</a>
+        <a target="_blank" href="https://github.com/MichaelYogar">
+          Github
+        </a>
       </div>
     </article>
   );

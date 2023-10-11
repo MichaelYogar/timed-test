@@ -31,7 +31,7 @@ const fetcher = async (): Promise<Interview[]> => {
 };
 
 const validationSchema = Yup.object().shape({
-  id: Yup.string().required(),
+  id: Yup.string().required("Please select one option."),
 });
 
 export const InterviewForm = () => {
