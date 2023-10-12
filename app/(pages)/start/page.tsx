@@ -20,9 +20,9 @@ import { Interview } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { InterviewForm } from "@/app/components/InterviewForm";
 import useSWR, { mutate } from "swr";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Spinner } from "@/app/components/Snipper";
+import { NavBar } from "@/app/components/Navbar";
 
 const fetcher = async (): Promise<Interview[]> => {
   const result = await fetch(
@@ -112,12 +112,13 @@ const Page = () => {
   if (error) return <div className="">{error}</div>;
 
   return (
-    <div className="container">
-      <Link href="/">
+    <div className="container mx-auto h-screen flex flex-col my-10">
+      <NavBar user={session?.user!.name!} />
+      {/* <Link href="/">
         <ArrowLeftIcon
           style={{ width: "32px", height: "32px", marginBottom: "4px" }}
         />
-      </Link>
+      </Link> */}
       <div className="grid md:grid-cols-2">
         <div>
           <h1>Create Interview</h1>

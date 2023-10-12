@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -32,7 +32,7 @@ const Page = () => {
       if (redirectUrl) router.push(redirectUrl);
       else {
         router.refresh();
-        router.push("/");
+        router.back();
       }
     }
   };
