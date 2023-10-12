@@ -1,6 +1,6 @@
 "use client";
 
-import { AUTH_LOGIN } from "@/app/api/auth/login/route";
+import { AUTH_USER } from "@/app/api/auth/user/route";
 import { Button } from "@/components/ui/button";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -13,18 +13,20 @@ const Page = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const result = await fetch(AUTH_LOGIN, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    console.log("Status: " + result.status);
+    try {
+      const result = await fetch(AUTH_USER, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (result.status === 409) {
+        alert(`'${data.username}' already exists`);
+      }
+    } catch (error) {}
   };
 
   return (

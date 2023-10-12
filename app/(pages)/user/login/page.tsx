@@ -1,10 +1,11 @@
 "use client";
 
-import { AUTH_USER } from "@/app/api/auth/user/route";
 import { Button } from "@/components/ui/button";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-type Inputs = {
+type LoginInput = {
   username: string;
   password: string;
 };
@@ -13,18 +14,20 @@ const Page = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<LoginInput>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const result = await fetch(AUTH_USER, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+  const router = useRouter();
+
+  const onSubmit: SubmitHandler<LoginInput> = async (data) => {
+    const result = await signIn("credentials", {
+      redirect: false,
+      username: data.username,
+      password: data.password,
     });
-
-    console.log("Status: " + result.status);
+    const url = new URL(result?.url as string);
+    const redirectUrl = url.searchParams.get("callbackUrl")!;
+    if (result?.ok) router.push(redirectUrl);
   };
 
   return (

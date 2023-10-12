@@ -21,8 +21,6 @@ import { Button } from "@/components/ui/button";
 import { InterviewForm } from "@/app/components/InterviewForm";
 import useSWR, { mutate } from "swr";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/nextAuthOptions";
 import { useSession } from "next-auth/react";
 
 const fetcher = async (): Promise<Interview[]> => {
