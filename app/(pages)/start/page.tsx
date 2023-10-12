@@ -22,6 +22,7 @@ import { InterviewForm } from "@/app/components/InterviewForm";
 import useSWR, { mutate } from "swr";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { Spinner } from "@/app/components/Snipper";
 
 const fetcher = async (): Promise<Interview[]> => {
   const result = await fetch(
@@ -102,8 +103,13 @@ const Page = () => {
     }
     mutate(INTERVIEW_ROUTE);
   };
-  if (isLoading) return <div>loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (isLoading)
+    return (
+      <div className="fixed top-1/2 left-1/2 translate-x-[-50%] trnaslate-y-[-50%]">
+        <Spinner />
+      </div>
+    );
+  if (error) return <div className="">{error}</div>;
 
   return (
     <div className="container">
