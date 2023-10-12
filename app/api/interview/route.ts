@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { getQSParamFromURL } from "@/lib/utils";
 import { NextApiRequest, NextApiResponse } from "next";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export const INTERVIEW_ROUTE = "/api/interview/";
 
@@ -17,10 +17,9 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
   return NextResponse.json(interviews, { status: 200 });
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const { title, questions } = await request.json();
-  console.log(title);
-  console.log(questions);
+  const token = request.cookies.get("asdf");
 
   const interview = await prisma.interview.create({
     data: { title },
