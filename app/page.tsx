@@ -1,13 +1,11 @@
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { NavBar } from "./components/Navbar";
 import { getServerSession } from "next-auth/next";
 import { options } from "./api/auth/[...nextauth]/nextAuthOptions";
 
-const page = async () => {
+const Page = async () => {
   const session = await getServerSession(options);
-  if (session) console.log(session);
 
   return (
     <article className="container mx-auto prose prose-sm md:prose prose-neutral pt-8 prose-a:text-blue-600 prose-p:text-black">
@@ -22,10 +20,10 @@ const page = async () => {
       </blockquote>
       <Separator />
       <div className="flex justify-center my-2">
-        <Link href="/create">Demo</Link>
+        <Link href="/start">Demo</Link>
       </div>
     </article>
   );
 };
 
-export default page;
+export default Page;

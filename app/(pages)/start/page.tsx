@@ -105,10 +105,6 @@ const Page = () => {
   if (isLoading) return <div>loading...</div>;
   if (error) return <div>{error}</div>;
 
-  if (status === "authenticated" && session) {
-    return <p>Signed in as {session.user?.email}</p>;
-  }
-
   return (
     <div className="container">
       <Link href="/">
@@ -218,9 +214,20 @@ const Page = () => {
                 );
               })}
               <p>{form.formState.errors.questions?.root?.message}</p>
-              <Button className="mt-4" variant="outline">
-                Create
-              </Button>
+              <div className="group inline-block">
+                <Button
+                  disabled={!session}
+                  className="myDIV mt-4"
+                  variant="outline"
+                >
+                  Create
+                </Button>
+                {!session && (
+                  <div className="hide hidden group-hover:block group-hover:text-red-500">
+                    Users required to log in :D
+                  </div>
+                )}
+              </div>
             </form>
           </Form>
         </div>
