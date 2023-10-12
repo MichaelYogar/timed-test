@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -27,7 +28,10 @@ const Page = () => {
     });
     const url = new URL(result?.url as string);
     const redirectUrl = url.searchParams.get("callbackUrl")!;
-    if (result?.ok) router.push(redirectUrl);
+    if (result?.ok) {
+      if (redirectUrl) router.push(redirectUrl);
+      else router.push("/");
+    }
   };
 
   return (
@@ -42,6 +46,12 @@ const Page = () => {
         {errors.password && <span>This field is required</span>}
 
         <Button variant="outline">Submit</Button>
+        <div>
+          <p>Not a registered user?</p>
+          <Link href="/user/sign-up">
+            <Button variant="link">Sign up</Button>
+          </Link>
+        </div>
       </form>
     </div>
   );

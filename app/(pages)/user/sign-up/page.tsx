@@ -2,6 +2,7 @@
 
 import { AUTH_USER } from "@/app/api/auth/user/route";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 type Inputs = {
@@ -16,6 +17,8 @@ const Page = () => {
     formState: { errors },
   } = useForm<Inputs>();
 
+  const router = useRouter();
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
       const result = await fetch(AUTH_USER, {
@@ -25,6 +28,8 @@ const Page = () => {
       });
       if (result.status === 409) {
         alert(`'${data.username}' already exists`);
+      } else {
+        router.push("/user/login");
       }
     } catch (error) {}
   };
