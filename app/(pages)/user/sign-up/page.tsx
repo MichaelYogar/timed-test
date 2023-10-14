@@ -2,6 +2,7 @@
 
 import { AUTH_USER } from "@/app/api/auth/user/route";
 import { Button } from "@/components/ui/button";
+import { WEBSITE_NAME } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -37,7 +38,7 @@ const Page = () => {
   return (
     <div className="h-screen flex items-center justify-center">
       <div className="md:border-[1px] border-gray-400 md:rounded-sm p-8">
-        <h1 className="font-bold text-lg mb-2">Create a Oneprep Account</h1>
+        <h1 className="font-bold text-lg mb-2">{`Create a ${WEBSITE_NAME} Account`}</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6">
             <label
