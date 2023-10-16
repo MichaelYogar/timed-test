@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import Yup from "@/lib/yup-extended";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useSWRImmutable from "swr/immutable";
+import Link from "next/link";
 
 const fetcher = async (): Promise<Interview[]> => {
   const result = await fetch(
@@ -89,9 +90,16 @@ export const InterviewForm = () => {
               </FormItem>
             )}
           />
-          <Button variant="ghost" type="submit">
-            Submit
-          </Button>
+          <div className="flex justify-between">
+            <Button variant="ghost" type="submit">
+              Submit
+            </Button>
+            <Link href="/interview/create">
+              <Button variant="ghost" type="button">
+                Create
+              </Button>
+            </Link>
+          </div>
         </form>
       </Form>
     </div>

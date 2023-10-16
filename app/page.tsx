@@ -20,7 +20,7 @@ const Page = async () => {
       </blockquote>
       <Separator />
       <div className="flex justify-center my-2">
-        <Link href="/start">Demo</Link>
+        <Link href="/interview/select">Demo</Link>
       </div>
     </article>
   );
