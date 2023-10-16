@@ -31,7 +31,7 @@ const fetcher = async (): Promise<Interview[]> => {
 };
 
 const validationSchema = Yup.object().shape({
-  id: Yup.string().required(),
+  id: Yup.string().required("Please select one option."),
 });
 
 export const InterviewForm = () => {
@@ -45,52 +45,55 @@ export const InterviewForm = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(({ id }) =>
-          router.push("/interview/" + id)
-        )}
-        className="w-2/3 space-y-6"
-      >
-        <FormField
-          control={form.control}
-          name="id"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>Current Interviews</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                  name="selection"
-                >
-                  {data &&
-                    data.map((item, i) => {
-                      return (
-                        <FormItem
-                          key={i}
-                          className="flex items-center space-x-3 space-y-0"
-                        >
-                          <FormControl>
-                            <RadioGroupItem value={item.id.toString()} />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            {item.title}
-                          </FormLabel>
-                        </FormItem>
-                      );
-                    })}
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+    <div className="flex justify-center">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(({ id }) =>
+            router.push("/interview/" + id)
           )}
-        />
-        <Button variant="ghost" type="submit">
-          Submit
-        </Button>
-      </form>
-    </Form>
+          // className="w-2/3 space-y-6"
+          className="space-y-6"
+        >
+          <FormField
+            control={form.control}
+            name="id"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>Current Interviews</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                    name="selection"
+                  >
+                    {data &&
+                      data.map((item, i) => {
+                        return (
+                          <FormItem
+                            key={i}
+                            className="flex items-center space-x-3 space-y-0"
+                          >
+                            <FormControl>
+                              <RadioGroupItem value={item.id.toString()} />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {item.title}
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      })}
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button variant="ghost" type="submit">
+            Submit
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 };

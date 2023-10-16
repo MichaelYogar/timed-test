@@ -20,7 +20,9 @@ import { Interview } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { InterviewForm } from "@/app/components/InterviewForm";
 import useSWR, { mutate } from "swr";
-import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { Spinner } from "@/app/components/Snipper";
+import { NavBar } from "@/app/components/Navbar";
 
 const fetcher = async (): Promise<Interview[]> => {
   const result = await fetch(
@@ -43,6 +45,7 @@ type Inputs = {
 
 const Page = () => {
   const { data, error, isLoading } = useSWR(INTERVIEW_ROUTE, fetcher);
+  const { data: session, status } = useSession();
 
   const MIN_VALUE = 1;
   const MAX_VALUE = 10;
@@ -100,17 +103,22 @@ const Page = () => {
     }
     mutate(INTERVIEW_ROUTE);
   };
-
-  if (isLoading) return <div>loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (isLoading)
+    return (
+      <div className="fixed top-1/2 left-1/2 translate-x-[-50%] trnaslate-y-[-50%]">
+        <Spinner />
+      </div>
+    );
+  if (error) return <div className="">{error}</div>;
 
   return (
-    <div className="container">
-      <Link href="/">
+    <div className="container mx-auto h-screen flex flex-col my-10">
+      <NavBar user={session?.user!.name!} />
+      {/* <Link href="/">
         <ArrowLeftIcon
           style={{ width: "32px", height: "32px", marginBottom: "4px" }}
         />
-      </Link>
+      </Link> */}
       <div className="grid md:grid-cols-2">
         <div>
           <h1>Create Interview</h1>
@@ -133,7 +141,7 @@ const Page = () => {
               {fields.map((field, index) => {
                 return (
                   <div
-                    className="flex lg:flex-row flex-col gap-1 lg:items-end items-start"
+                    className="flex lg:flex-row flex-col gap-1 lg:items-end items-start flex-wrap"
                     key={field.id}
                   >
                     <FormField
@@ -141,7 +149,7 @@ const Page = () => {
                       name={`questions.${index}.question`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Question: </FormLabel>
+                          <FormLabel>Question {index + 1}: </FormLabel>
                           <FormControl>
                             <Input required className="w-fit" {...field} />
                           </FormControl>
@@ -213,9 +221,20 @@ const Page = () => {
                 );
               })}
               <p>{form.formState.errors.questions?.root?.message}</p>
-              <Button className="mt-4" variant="outline">
-                Create
-              </Button>
+              <div className="group inline-block">
+                <Button
+                  disabled={!session}
+                  className="myDIV mt-4"
+                  variant="outline"
+                >
+                  Create
+                </Button>
+                {!session && (
+                  <div className="hide hidden group-hover:block group-hover:text-red-500">
+                    Users required to log in :D
+                  </div>
+                )}
+              </div>
             </form>
           </Form>
         </div>

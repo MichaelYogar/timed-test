@@ -1,17 +1,18 @@
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { NavBar } from "./components/Navbar";
+import { getServerSession } from "next-auth/next";
+import { options } from "./api/auth/[...nextauth]/nextAuthOptions";
 
-const page = () => {
+const Page = async () => {
+  const session = await getServerSession(options);
+
   return (
-    <article className="container mx-auto prose prose-sm md:prose pt-8">
-      <h3>About</h3>
-      <div className="flex justify-end">
-        <Button variant="link" asChild>
-          <Link href="/create">Try me</Link>
-        </Button>
+    <article className="container mx-auto prose prose-sm md:prose prose-neutral pt-8 prose-a:text-blue-600 prose-p:text-black">
+      <NavBar user={session?.user!.name!} />
+      <div className="my-8">
+        <p>Currently at prototype stage.</p>
       </div>
-      <div className="mb-8">Currently at prototype stage.</div>
       <blockquote className="mt-6 border-l-2 pl-6 italic">
         When to use iterative development? You should use iterative development
         only on projects that you want to succeed.
@@ -19,10 +20,10 @@ const page = () => {
       </blockquote>
       <Separator />
       <div className="flex justify-center my-2">
-        <a>Github</a>
+        <Link href="/start">Demo</Link>
       </div>
     </article>
   );
 };
 
-export default page;
+export default Page;

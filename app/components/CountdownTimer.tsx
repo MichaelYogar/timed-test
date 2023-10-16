@@ -14,8 +14,8 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
   }, [done, setDone]);
 
   return (
-    <div>
-      <div>
+    <div className="container flex justify-center">
+      <div className="p-4 w-36 h-36 rounded-full border-2 border-black flex justify-center items-center flex-col">
         <h1>{minutes <= -1 ? <span>-</span> : <div>minutes {minutes}</div>}</h1>
         <h1>{seconds <= -1 ? <span>-</span> : <div>seconds {seconds}</div>}</h1>
       </div>

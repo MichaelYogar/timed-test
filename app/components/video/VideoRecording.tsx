@@ -1,15 +1,22 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { RecordRTCPromisesHandler, invokeSaveAsDialog } from "recordrtc";
-import { useErrorBoundary } from "react-error-boundary";
 import { addVideo } from "@/lib/idb";
+import { NextContext } from "@/lib/context";
+import { Button } from "@/components/ui/button";
 
 interface VideoProps {
+  content: string;
   done: Boolean;
   setDone(value: boolean): void;
+  stream: MediaStream | null;
 }
 
-export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
-  const [stream, setStream] = useState<MediaStream | null>(null);
+export const VideoRecording: React.FC<VideoProps> = ({
+  content,
+  done,
+  setDone,
+  stream,
+}) => {
   const [blob, setBlob] = useState<Blob | null>(null);
 
   const [stop, setStop] = useState(false);
@@ -18,34 +25,11 @@ export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
   const recordRTCRef = useRef<RecordRTCPromisesHandler | null>(null);
   const recordingRef = useRef<HTMLVideoElement | null>(null);
 
-  const { showBoundary } = useErrorBoundary();
+  const { handleNext } = useContext(NextContext);
 
   const startRecording = async () => {
-    let cameraStream = null;
-
-    try {
-      cameraStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          // TODO: mobile should have support for back camera
-          facingMode: "user",
-        },
-        audio: {
-          echoCancellation: true,
-        },
-      });
-    } catch (e) {
-      if (e.name === "NotAllowedError") {
-        alert(
-          "Permission denied. Cannot access audio/video. Please reload page!"
-        );
-      }
-      showBoundary(e);
-    }
-
-    if (cameraStream) {
-      setStream(cameraStream);
-
-      recordRTCRef.current = new RecordRTCPromisesHandler(cameraStream, {
+    if (stream) {
+      recordRTCRef.current = new RecordRTCPromisesHandler(stream, {
         type: "video",
       });
 
@@ -55,6 +39,8 @@ export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
         .catch((e) => alert(e));
 
       setRecording(true);
+    } else {
+      alert("Failed to start recording");
     }
   };
 
@@ -66,7 +52,6 @@ export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
         await addVideo(currentBlob);
         setBlob(currentBlob);
 
-        setStream(null);
         setDone(true);
         setStop(true);
         setRecording(false);
@@ -90,7 +75,6 @@ export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
       <header>
         {!stop && (
           <>
-            {recording && <button onClick={handleStop}>stop</button>}
             <video
               ref={recordingRef}
               muted={true}
@@ -99,8 +83,19 @@ export const VideoRecording: React.FC<VideoProps> = ({ done, setDone }) => {
             />
           </>
         )}
+        <div style={{ float: "right" }}>
+          {recording && <Button onClick={handleStop}>stop</Button>}
+        </div>
         {blob && (
-          <button onClick={() => invokeSaveAsDialog(blob)}>Save Video</button>
+          <div>
+            <h1>{content}</h1>
+            <Button variant="link" disabled={!done} onClick={handleNext}>
+              Next
+            </Button>
+            <Button variant="outline" onClick={() => invokeSaveAsDialog(blob)}>
+              Save Video
+            </Button>
+          </div>
         )}
       </header>
     </div>
