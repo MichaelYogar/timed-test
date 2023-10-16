@@ -1,22 +1,40 @@
 "use client";
 
 import { QUESTION_ROUTE } from "@/app/api/question/route";
-import { CountdownTimer } from "@/app/components/CountdownTimer";
+import { Finished } from "@/app/components/Finished";
+import { PreInterview } from "@/app/components/PreInterview";
 import { Question } from "@/app/components/Question";
 import { NextContext } from "@/lib/context";
 import { clearVideos } from "@/lib/idb";
 import { getUrlWithQueryParams } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 
-const Page = ({ params }) => {
+type PageProps = {
+  params: { id: string };
+};
+
+const validateParam = (params) => {
+  if (!("id" in params)) return false;
+
+  const { id } = params;
+  if (typeof id != "string") return false;
+
+  return (
+    !isNaN(id as any) && // use type coercion
+    !isNaN(parseFloat(id)) &&
+    Number.isFinite(parseFloat(id))
+  );
+};
+
+const Page: React.FC<PageProps> = ({ params }) => {
   const [index, setIndex] = useState(0);
   const [start, setStart] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
-  const router = useRouter();
 
   const fetcher = async () => {
+    if (!validateParam(params)) throw new Error("Invalid route param");
+
     const result = await fetch(
       getUrlWithQueryParams(QUESTION_ROUTE, { id: params.id }),
       { method: "GET" }
@@ -32,48 +50,24 @@ const Page = ({ params }) => {
     await clearVideos();
   };
 
-  useEffect(() => {
-    const getStream = async () => {
-      try {
-        const cameraStream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            // TODO: mobile should have support for back camera
-            facingMode: "user",
-          },
-          audio: {
-            echoCancellation: true,
-          },
-        });
-
-        setStream(cameraStream);
-      } catch (e) {
-        if (e.name === "NotAllowedError") {
-          alert(
-            "Permission denied. Cannot access audio/video. Please reload page!"
-          );
-        }
-      }
-    };
-
-    getStream();
-  }, []);
-
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>{error.toString()}</p>;
-  if (data && index >= data.length) router.push("/result");
+
+  if (data.length === 0) return <p>Failed to find data</p>;
+  if (index >= data.length) return <Finished />;
 
   if (!start && index < data.length) {
     return (
-      <div className="container flex h-screen flex-col gap-4">
-        <div className="m-auto">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            {data[index].content}
-          </h1>
-          <CountdownTimer setDone={setStart} seconds={10} minutes={0} />
-        </div>
-      </div>
+      <PreInterview
+        content={data[index].content}
+        setStart={setStart}
+        setStream={setStream}
+      />
     );
   }
+
+  if (!stream) return <p>Failed to start recording... please reload page</p>;
+
   return (
     <>
       <div className="flex h-[calc(100dvh)] items-center">
