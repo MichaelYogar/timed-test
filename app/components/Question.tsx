@@ -1,7 +1,10 @@
 import { CountdownTimer } from "@/app/components/CountdownTimer";
+import { Button } from "@/components/ui/button";
+import { NextContext } from "@/lib/context";
 import { Prisma } from "@prisma/client";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { invokeSaveAsDialog } from "recordrtc";
 
 const VideoRecording = dynamic(
   () =>
@@ -14,14 +17,22 @@ const VideoRecording = dynamic(
 );
 
 type QuestionProps =
-  | Prisma.QuestionCreateInput & { stream: MediaStream | null };
+  | Prisma.QuestionCreateInput & {
+      stream: MediaStream | null;
+      remaining: number;
+    };
 
 export const Question: React.FC<QuestionProps> = ({
   content,
   duration,
   stream,
+  remaining,
 }) => {
-  const [done, setDone] = useState<boolean>(false);
+  const [blob, setBlob] = useState<Blob | null>(null);
+  // Either timer runs out or they manually press stop buttion
+  const [done, setDone] = useState(false);
+  const { handleNext } = useContext(NextContext);
+
   const result = parseDuration(duration);
 
   return (
@@ -37,12 +48,26 @@ export const Question: React.FC<QuestionProps> = ({
       )}
       <div className="container flex justify-center">
         <VideoRecording
+          setBlob={setBlob}
           stream={stream}
-          content={content}
           setDone={setDone}
           done={done}
         />
       </div>
+      {blob && (
+        <div>
+          <h1>{content}</h1>
+          <Button variant="outline" disabled={!done} onClick={handleNext}>
+            {remaining === 0 ? "Finished" : "Done"}
+          </Button>
+          <Button variant="outline" onClick={() => invokeSaveAsDialog(blob)}>
+            Save Video
+          </Button>
+          <div className="flex justify-center">
+            Remaining Questions: {remaining}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

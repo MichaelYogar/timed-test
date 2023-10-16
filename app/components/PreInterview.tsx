@@ -44,7 +44,7 @@ export const PreInterview: React.FC<PreInterviewProps> = ({
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             {content}
           </h1>
-          <CountdownTimer setDone={setStart} seconds={10} minutes={0} />
+          <CountdownTimer setDone={setStart} seconds={3} minutes={0} />
         </div>
       </div>
     </div>

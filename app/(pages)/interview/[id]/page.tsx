@@ -77,6 +77,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
               <div className="container flex flex-col justify-center">
                 <NextContext.Provider value={{ handleNext }}>
                   <Question
+                    remaining={data.length - index - 1}
                     stream={stream}
                     key={index}
                     content={data[index].content}
