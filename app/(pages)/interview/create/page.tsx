@@ -108,14 +108,15 @@ const Page = () => {
 
     mutate(INTERVIEW_ROUTE);
 
-    router.push('/interview/select');
+    router.push("/interview/select");
   };
 
   const handleAdd = () => {
     const value = count + 1;
-    setCount(value);
-    if (value < MAX_VALUE) append(initialValue);
-    else alert("Max number of questions");
+    if (value < MAX_VALUE) {
+      append(initialValue);
+      setCount(value);
+    } else alert("Max number of questions");
   };
 
   const handleRemove = (index: number) => {
@@ -154,6 +155,7 @@ const Page = () => {
                     )}
                   />
                 </div>
+
                 {fields.map((field, index) => {
                   return (
                     <div
@@ -236,13 +238,18 @@ const Page = () => {
                 })}
                 <p>{form.formState.errors.questions?.root?.message}</p>
                 <div className="group inline-block">
-                    <Button
-                      disabled={!session}
-                      className="myDIV mt-4"
-                      variant="outline"
-                    >
-                      Create
-                    </Button>
+                  <div>
+                    <p>
+                      Questions remaining: {Math.max(MAX_VALUE - count - 1, 0)}
+                    </p>
+                  </div>
+                  <Button
+                    disabled={!session}
+                    className="myDIV mt-4"
+                    variant="outline"
+                  >
+                    Create
+                  </Button>
                   {!session && (
                     <div className="hide hidden group-hover:block group-hover:text-red-500">
                       Users required to log in :D
