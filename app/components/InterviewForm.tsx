@@ -35,7 +35,11 @@ const validationSchema = Yup.object().shape({
   id: Yup.string().required("Please select one option."),
 });
 
-export const InterviewForm = () => {
+type InterviewFormProps = {
+  loggedIn: boolean
+}
+
+export const InterviewForm : React.FC<InterviewFormProps> = ({loggedIn }) => {
   const { data, error, isLoading } = useSWRImmutable(INTERVIEW_ROUTE, fetcher);
   const form = useForm({
     resolver: yupResolver(validationSchema),
@@ -94,11 +98,9 @@ export const InterviewForm = () => {
             <Button variant="ghost" type="submit">
               Submit
             </Button>
-            <Link href="/interview/create">
-              <Button variant="ghost" type="button">
+              <Button variant="ghost" type="button" disabled={!loggedIn} onClick={() => router.push('/interview/create')}>
                 Create
               </Button>
-            </Link>
           </div>
         </form>
       </Form>

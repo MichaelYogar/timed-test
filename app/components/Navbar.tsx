@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 
 type NavbarProps = {
-  user: string | undefined;
+  user: string | undefined | null 
 };
 
 export const NavBar: React.FC<NavbarProps> = ({ user }) => {
