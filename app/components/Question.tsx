@@ -4,7 +4,6 @@ import { NextContext } from "@/lib/context";
 import { Prisma } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { useContext, useState } from "react";
-import { invokeSaveAsDialog } from "recordrtc";
 
 const VideoRecording = dynamic(
   () =>
@@ -35,6 +34,11 @@ export const Question: React.FC<QuestionProps> = ({
 
   const result = parseDuration(duration);
 
+  const handleSave = async (blob: Blob) => {
+    const { invokeSaveAsDialog } = (await import("recordrtc")).default;
+    invokeSaveAsDialog(blob);
+  };
+
   return (
     <div>
       {!done && (
@@ -60,7 +64,7 @@ export const Question: React.FC<QuestionProps> = ({
           <Button variant="outline" disabled={!done} onClick={handleNext}>
             {remaining === 0 ? "Finished" : "Done"}
           </Button>
-          <Button variant="outline" onClick={() => invokeSaveAsDialog(blob)}>
+          <Button variant="outline" onClick={() => handleSave(blob)}>
             Save Video
           </Button>
           <div className="flex justify-center">
