@@ -1,31 +1,24 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { RecordRTCPromisesHandler, invokeSaveAsDialog } from "recordrtc";
+import { RecordRTCPromisesHandler } from "recordrtc";
 import { addVideo } from "@/lib/idb";
-import { NextContext } from "@/lib/context";
-import { Button } from "@/components/ui/button";
 
 interface VideoProps {
-  content: string;
   done: Boolean;
   setDone(value: boolean): void;
+  setBlob(blob: Blob | null): void;
   stream: MediaStream | null;
 }
 
 export const VideoRecording: React.FC<VideoProps> = ({
-  content,
   done,
   setDone,
+  setBlob,
   stream,
 }) => {
-  const [blob, setBlob] = useState<Blob | null>(null);
-
-  const [stop, setStop] = useState(false);
   const [recording, setRecording] = useState(false);
 
   const recordRTCRef = useRef<RecordRTCPromisesHandler | null>(null);
   const recordingRef = useRef<HTMLVideoElement | null>(null);
-
-  const { handleNext } = useContext(NextContext);
 
   const startRecording = async () => {
     if (stream) {
@@ -53,7 +46,6 @@ export const VideoRecording: React.FC<VideoProps> = ({
         setBlob(currentBlob);
 
         setDone(true);
-        setStop(true);
         setRecording(false);
       })
       .catch((e) => console.log(e));
@@ -65,15 +57,15 @@ export const VideoRecording: React.FC<VideoProps> = ({
 
   useEffect(() => {
     // Time ran out instead of manually stopping
-    if (done && !stop) handleStop();
+    if (done) handleStop();
   }, [done]);
 
-  if (!recording && !stop) startRecording();
+  if (!recording && !done) startRecording();
 
   return (
     <div>
       <header>
-        {!stop && (
+        {!done && (
           <>
             <video
               ref={recordingRef}
@@ -84,19 +76,8 @@ export const VideoRecording: React.FC<VideoProps> = ({
           </>
         )}
         <div style={{ float: "right" }}>
-          {recording && <Button onClick={handleStop}>stop</Button>}
+          {recording && <button onClick={handleStop}>stop</button>}
         </div>
-        {blob && (
-          <div>
-            <h1>{content}</h1>
-            <Button variant="link" disabled={!done} onClick={handleNext}>
-              Next
-            </Button>
-            <Button variant="outline" onClick={() => invokeSaveAsDialog(blob)}>
-              Save Video
-            </Button>
-          </div>
-        )}
       </header>
     </div>
   );

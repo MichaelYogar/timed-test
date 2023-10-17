@@ -1,7 +1,7 @@
 "use client";
 
 import { AUTH_USER } from "@/app/api/auth/user/route";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/components/ui/Button";
 import { WEBSITE_NAME } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -41,36 +41,24 @@ const Page = () => {
         <h1 className="font-bold text-lg mb-2">{`Create a ${WEBSITE_NAME} Account`}</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6">
-            <label
-              htmlFor="username"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Your username
-            </label>
+            <label htmlFor="username">Your username</label>
             <input
               {...register("username", { required: true })}
               id="username"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             />
             {errors.username && <span>This field is required</span>}
           </div>
           <div className="mb-6">
-            <label
-              htmlFor="password"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Your password
-            </label>
+            <label htmlFor="password">Your password</label>
             <input
               type="password"
               id="password"
               {...register("password", { required: true })}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             />
             {errors.password && <span>This field is required</span>}
           </div>
 
-          <Button variant="outline">Submit</Button>
+          <Button>Create</Button>
         </form>
       </div>
     </div>

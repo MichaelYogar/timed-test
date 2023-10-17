@@ -1,7 +1,9 @@
 import { CountdownTimer } from "@/app/components/CountdownTimer";
+import { NextContext } from "@/lib/context";
 import { Prisma } from "@prisma/client";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { Button } from "./ui/Button";
 
 const VideoRecording = dynamic(
   () =>
@@ -14,15 +16,28 @@ const VideoRecording = dynamic(
 );
 
 type QuestionProps =
-  | Prisma.QuestionCreateInput & { stream: MediaStream | null };
+  | Prisma.QuestionCreateInput & {
+      stream: MediaStream | null;
+      remaining: number;
+    };
 
 export const Question: React.FC<QuestionProps> = ({
   content,
   duration,
   stream,
+  remaining,
 }) => {
-  const [done, setDone] = useState<boolean>(false);
+  const [blob, setBlob] = useState<Blob | null>(null);
+  // Either timer runs out or they manually press stop buttion
+  const [done, setDone] = useState(false);
+  const { handleNext } = useContext(NextContext);
+
   const result = parseDuration(duration);
+
+  const handleSave = async (blob: Blob) => {
+    const { invokeSaveAsDialog } = (await import("recordrtc")).default;
+    invokeSaveAsDialog(blob);
+  };
 
   return (
     <div>
@@ -37,12 +52,26 @@ export const Question: React.FC<QuestionProps> = ({
       )}
       <div className="container flex justify-center">
         <VideoRecording
+          setBlob={setBlob}
           stream={stream}
-          content={content}
           setDone={setDone}
           done={done}
         />
       </div>
+      {blob && (
+        <div className="flex flex-col items-center">
+          <h1>Question: {content}</h1>
+          <div className="flex space-between">
+            <div>
+              <Button onClick={() => handleSave(blob)}>Save</Button>
+            </div>
+            <Button disabled={!done} onClick={handleNext}>
+              {remaining === 0 ? "Finish" : "Next"}
+            </Button>
+          </div>
+          <p>Remaining Questions: {remaining}</p>
+        </div>
+      )}
     </div>
   );
 };

@@ -8,7 +8,8 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
   const [seconds, minutes, done] = useCountdown(props);
 
   useEffect(() => {
-    if (done === true) {
+    // setDone is for any component that needs to know that the timer is over
+    if (done === true && setDone) {
       setDone(done);
     }
   }, [done, setDone]);
