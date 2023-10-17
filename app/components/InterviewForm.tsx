@@ -43,28 +43,36 @@ export const InterviewForm: React.FC<InterviewFormProps> = ({ loggedIn }) => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="flex justify-center">
+    <div className="flex w-full justify-center">
       <form
         onSubmit={handleSubmit(({ id }) => {
           return router.push("/interview/" + id);
         })}
         className="space-y-6"
       >
+        <h1>Current Interviews</h1>
         {data?.map((field, id) => {
           return (
             <div key={id}>
-              <input
-                type="radio"
-                id={field.title}
-                value={field.id}
-                {...register("id")}
-              />
-              <label htmlFor={field.title}>{field.title}</label>
+              <div className="flex items-center mb-2">
+                <div className="flex flex-row ">
+                  <input
+                    type="radio"
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "
+                    id={field.title}
+                    value={field.id}
+                    {...register("id")}
+                  />
+                  <label htmlFor={field.title} className="ml-2 ">
+                    {field.title}
+                  </label>
+                </div>
+              </div>
             </div>
           );
         })}
         <div>{errors.id?.message}</div>
-        <div className="flex justify-between">
+        <div className="flex flex-row  gap-2">
           <button>Submit</button>
           <button
             type="button"
