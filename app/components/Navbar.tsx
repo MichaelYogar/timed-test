@@ -1,6 +1,7 @@
 "use client";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { Button } from "./ui/Button";
 
 type NavbarProps = {
   user: string | undefined | null;
@@ -14,15 +15,13 @@ export const NavBar: React.FC<NavbarProps> = ({ user }) => {
         {user ? (
           <div>
             <div className="inline-block">
-              <button className="h-0" onClick={() => signOut()}>
-                log out
-              </button>
+              <Button onClick={() => signOut()}>log out</Button>
             </div>
           </div>
         ) : (
           <div>
             <Link href="/user/login">
-              <button>login</button>
+              <Button>login</Button>
             </Link>
           </div>
         )}

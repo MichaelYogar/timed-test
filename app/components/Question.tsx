@@ -3,6 +3,7 @@ import { NextContext } from "@/lib/context";
 import { Prisma } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { useContext, useState } from "react";
+import { Button } from "./ui/Button";
 
 const VideoRecording = dynamic(
   () =>
@@ -58,15 +59,17 @@ export const Question: React.FC<QuestionProps> = ({
         />
       </div>
       {blob && (
-        <div>
-          <h1>{content}</h1>
-          <button disabled={!done} onClick={handleNext}>
-            {remaining === 0 ? "Finished" : "Done"}
-          </button>
-          <button onClick={() => handleSave(blob)}>Save Video</button>
-          <div className="flex justify-center">
-            Remaining Questions: {remaining}
+        <div className="flex flex-col items-center">
+          <h1>Question: {content}</h1>
+          <div className="flex space-between">
+            <div>
+              <Button onClick={() => handleSave(blob)}>Save</Button>
+            </div>
+            <Button disabled={!done} onClick={handleNext}>
+              {remaining === 0 ? "Finish" : "Next"}
+            </Button>
           </div>
+          <p>Remaining Questions: {remaining}</p>
         </div>
       )}
     </div>

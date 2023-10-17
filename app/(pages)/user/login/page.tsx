@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/app/components/ui/Button";
 import { WEBSITE_NAME } from "@/lib/constants";
 import { SignInResponse, signIn } from "next-auth/react";
 import Link from "next/link";
@@ -82,11 +83,9 @@ const Page = () => {
             </div>
             <div className="flex justify-between">
               <Link href="/user/sign-up">
-                <button className="text-[rgb(26,115,232)]" type="button">
-                  Create account
-                </button>
+                <Button type="button">Create account</Button>
               </Link>
-              <button>Submit</button>
+              <Button>Submit</Button>
             </div>
           </form>
         </div>

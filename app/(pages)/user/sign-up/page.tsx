@@ -1,7 +1,7 @@
 "use client";
 
 import { AUTH_USER } from "@/app/api/auth/user/route";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/components/ui/Button";
 import { WEBSITE_NAME } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -58,7 +58,7 @@ const Page = () => {
             {errors.password && <span>This field is required</span>}
           </div>
 
-          <button>Submit</button>
+          <Button>Create</Button>
         </form>
       </div>
     </div>

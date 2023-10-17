@@ -14,6 +14,7 @@ import { useSession } from "next-auth/react";
 import { Spinner } from "@/app/components/Snipper";
 import { NavBar } from "@/app/components/Navbar";
 import { useRouter } from "next/navigation";
+import { Button } from "@/app/components/ui/Button";
 
 const fetcher = async (): Promise<Interview[]> => {
   const result = await fetch(
@@ -214,7 +215,7 @@ const Page = () => {
             );
           })}
           <div className="group">
-            <button disabled={status === "unauthenticated"}>Submit</button>
+            <Button disabled={status === "unauthenticated"}>Submit</Button>
             {status === "unauthenticated" && (
               <div className="w-full hide hidden group-hover:block group-hover:text-red-900">
                 <p className="break-words">Login required.</p>
