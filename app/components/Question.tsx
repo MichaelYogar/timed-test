@@ -1,5 +1,4 @@
 import { CountdownTimer } from "@/app/components/CountdownTimer";
-import { Button } from "@/components/ui/button";
 import { NextContext } from "@/lib/context";
 import { Prisma } from "@prisma/client";
 import dynamic from "next/dynamic";
@@ -61,12 +60,10 @@ export const Question: React.FC<QuestionProps> = ({
       {blob && (
         <div>
           <h1>{content}</h1>
-          <Button variant="outline" disabled={!done} onClick={handleNext}>
+          <button disabled={!done} onClick={handleNext}>
             {remaining === 0 ? "Finished" : "Done"}
-          </Button>
-          <Button variant="outline" onClick={() => handleSave(blob)}>
-            Save Video
-          </Button>
+          </button>
+          <button onClick={() => handleSave(blob)}>Save Video</button>
           <div className="flex justify-center">
             Remaining Questions: {remaining}
           </div>

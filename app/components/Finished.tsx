@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { HomeIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 
@@ -16,7 +15,7 @@ export const Finished = () => {
           <p>
             Email feedback:
             <a href="mailto:someone@example.com">
-              <Button variant="link">michaelyogar878@gmail.com</Button>
+              <button>michaelyogar878@gmail.com</button>
             </a>
           </p>
         </div>

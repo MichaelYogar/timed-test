@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { WEBSITE_NAME } from "@/lib/constants";
 import { SignInResponse, signIn } from "next-auth/react";
 import Link from "next/link";
@@ -60,31 +59,19 @@ const Page = () => {
         <div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6">
-              <label
-                htmlFor="username"
-                className="block mb-2 text-sm font-medium text-gray-900"
-              >
-                Your username
-              </label>
+              <label htmlFor="username">Your username</label>
               <input
                 {...register("username", { required: true })}
                 id="username"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               />
               {errors.username && <span>This field is required</span>}
             </div>
             <div className="mb-6">
-              <label
-                htmlFor="password"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Your password
-              </label>
+              <label htmlFor="password">Your password</label>
               <input
                 type="password"
                 id="password"
                 {...register("password", { required: true })}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               />
               {errors.password && <span>This field is required</span>}
               <p className="mt-2 text-sm text-red-600 dark:text-red-500">
@@ -95,14 +82,9 @@ const Page = () => {
             </div>
             <div className="flex justify-between">
               <Link href="/user/sign-up">
-                <Button
-                  size="lg"
-                  className="text-[rgb(26,115,232)]"
-                  type="button"
-                  variant="link"
-                >
+                <button className="text-[rgb(26,115,232)]" type="button">
                   Create account
-                </Button>
+                </button>
               </Link>
               <Button size="lg" variant="outline">
                 Submit
@@ -112,25 +94,6 @@ const Page = () => {
         </div>
       </div>
     </div>
-    // <div>
-    //   <form onSubmit={handleSubmit(onSubmit)}>
-    //     <label>Username</label>
-    //     <input {...register("username", { required: true })} />
-    //     {errors.username && <span>This field is required</span>}
-
-    //     <label>Password</label>
-    //     <input {...register("password", { required: true })} />
-    //     {errors.password && <span>{errors.password.message}</span>}
-
-    //     <Button variant="outline">Submit</Button>
-    //     <div>
-    //       <p>Not a registered user?</p>
-    //       <Link href="/user/sign-up">
-    //         <Button variant="link">Sign up</Button>
-    //       </Link>
-    //     </div>
-    //   </form>
-    // </div>
   );
 };
 

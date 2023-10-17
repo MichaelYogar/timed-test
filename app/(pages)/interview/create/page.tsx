@@ -8,17 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Yup from "../../../../lib/yup-extended";
 import { PlusIcon, MinusIcon } from "@radix-ui/react-icons";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Interview } from "@prisma/client";
-import { Button } from "@/components/ui/button";
 import useSWR, { mutate } from "swr";
 import { useSession } from "next-auth/react";
 import { Spinner } from "@/app/components/Snipper";
@@ -35,12 +25,21 @@ const fetcher = async (): Promise<Interview[]> => {
   return await result.json();
 };
 
+const MIN_VALUE = 1;
+const MAX_VALUE = 5;
+const initialValue = {
+  question: "",
+  minutes: 0,
+  seconds: 0,
+};
+
 type Inputs = {
   title: string;
   questions: {
     question: string;
     minutes: number;
     seconds: number;
+    minimum?: string;
   }[];
 };
 
@@ -49,14 +48,6 @@ const Page = () => {
   const { data: session, status } = useSession();
   const [count, setCount] = useState(0);
   const router = useRouter();
-
-  const MIN_VALUE = 1;
-  const MAX_VALUE = 5;
-  const initialValue = {
-    question: "",
-    minutes: 0,
-    seconds: 0,
-  };
 
   const validationSchema = Yup.object({
     title: Yup.string()
@@ -69,24 +60,48 @@ const Page = () => {
       .of(
         Yup.object({
           question: Yup.string().min(4, "too short").required("Required"),
-          seconds: Yup.number().min(0).max(60).required("Required"),
-          minutes: Yup.number().min(0).max(60).required("Required"),
-        })
+          seconds: Yup.number()
+            .typeError("Amount must be a number")
+            .min(0, "Greater than 0")
+            .max(60, "Less than 60")
+            .required("Required"),
+          minutes: Yup.number()
+            .typeError("Amount must be a number")
+            .min(0, "Greater than 0")
+            .max(60, "Less than 60")
+            .required("Required"),
+        }).test(
+          "at-least-one",
+          "At least one of minutes or seconds must be greater than 0",
+          function (values) {
+            const { minutes, seconds } = values;
+            if (!minutes && !seconds) {
+              return this.createError({
+                message:
+                  "At least one of minutes or seconds must be greater than 0",
+              });
+            }
+            return true;
+          }
+        )
       )
       .required("Must have questions")
       .min(MIN_VALUE, `Minimum of ${MIN_VALUE} question`)
       .max(MAX_VALUE, `Maximumof ${MAX_VALUE} question`),
   });
 
-  const form = useForm<Inputs>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<Inputs>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       title: "",
       questions: [initialValue],
     },
   });
-
-  const { control } = form;
 
   const { fields, append, remove } = useFieldArray<Inputs>({
     name: "questions",
@@ -107,7 +122,6 @@ const Page = () => {
     }
 
     mutate(INTERVIEW_ROUTE);
-
     router.push("/interview/select");
   };
 
@@ -133,133 +147,81 @@ const Page = () => {
   if (error) return <div className="">{error}</div>;
 
   return (
-    <div>
+    <div className="container h-screen my-2">
       <NavBar user={session?.user!.name!} />
-      <div className="container mx-auto h-screen flex flex-col items-center my-10">
-        <div>
-          <div>
-            <h1>Create Interview</h1>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div>
-                  <FormField
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Interview title</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {fields.map((field, index) => {
-                  return (
-                    <div
-                      className="flex lg:flex-row flex-col gap-1 lg:items-end items-start flex-wrap"
-                      key={field.id}
-                    >
-                      <FormField
-                        control={control}
-                        name={`questions.${index}.question`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Question {index + 1}: </FormLabel>
-                            <FormControl>
-                              <Input required className="w-fit" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={control}
-                        name={`questions.${index}.minutes`}
-                        render={({ field }) => (
-                          <div className="flex justify-start items-start">
-                            <FormItem>
-                              <FormLabel>Minutes: </FormLabel>
-                              <FormControl>
-                                <Input
-                                  className="w-fit"
-                                  type="number"
-                                  min={0}
-                                  max={100}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          </div>
-                        )}
-                      />
-                      <FormField
-                        control={control}
-                        name={`questions.${index}.seconds`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Seconds: </FormLabel>
-                            <FormControl>
-                              <Input
-                                className="w-fit"
-                                type="number"
-                                min={0}
-                                max={100}
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <div className="flex gap-1">
-                        <Button
-                          variant="outline"
-                          type="button"
-                          onClick={() => handleAdd()}
-                        >
-                          <PlusIcon />
-                        </Button>
-                        {index >= MIN_VALUE && (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => handleRemove(index)}
-                          >
-                            <MinusIcon />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-                <p>{form.formState.errors.questions?.root?.message}</p>
-                <div className="group inline-block">
-                  <div>
+      <div className="flex flex-col items-center my-10">
+        <form
+          style={{ margin: "0 auto" }}
+          className="sm:w-[40%]"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <label htmlFor="title">Interview Name</label>
+          <input id="title" {...register("title")} />
+          {fields.map((field, id) => {
+            return (
+              <div key={field.id}>
+                <div className="flex flex-row gap-2">
+                  <div className="basis-1/2">
+                    <label htmlFor={`questions.${id}.question`}>
+                      Question:
+                    </label>
+                    <input
+                      id={`questions.${id}.question`}
+                      {...register(`questions.${id}.question`)}
+                    />
                     <p>
-                      Questions remaining: {Math.max(MAX_VALUE - count - 1, 0)}
+                      {errors.questions &&
+                        errors.questions[id]?.question?.message}
                     </p>
                   </div>
-                  <Button
-                    disabled={!session}
-                    className="myDIV mt-4"
-                    variant="outline"
-                  >
-                    Create
-                  </Button>
-                  {!session && (
-                    <div className="hide hidden group-hover:block group-hover:text-red-500">
-                      Users required to log in :D
-                    </div>
+                  <div className="basis-1/4">
+                    <label htmlFor={`questions.${id}.minutes`}>Minutes: </label>
+                    <input
+                      id={`questions.${id}.minutes`}
+                      {...register(`questions.${id}.minutes`)}
+                    />
+                    <p>
+                      {errors.questions &&
+                        errors.questions[id]?.minutes?.message}
+                    </p>
+                  </div>
+                  <div className="basis-1/4">
+                    <label htmlFor={`questions.${id}.seconds`}>Seconds: </label>
+                    <input
+                      id={`questions.${id}.seconds`}
+                      {...register(`questions.${id}.seconds`)}
+                    />
+                    <p>
+                      {errors.questions &&
+                        errors.questions[id]?.seconds?.message}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <p>{errors.questions && errors.questions[id]?.message}</p>
+                </div>
+                <div className="inline-block">
+                  <button type="button" onClick={handleAdd}>
+                    <PlusIcon />
+                  </button>
+                  {id > 0 && (
+                    <button type="button" onClick={() => handleRemove(id)}>
+                      <MinusIcon />
+                    </button>
                   )}
                 </div>
-              </form>
-            </Form>
+              </div>
+            );
+          })}
+          <div className="group">
+            <button disabled={status === "unauthenticated"}>Submit</button>
+            {status === "unauthenticated" && (
+              <div className="w-full hide hidden group-hover:block group-hover:text-red-900">
+                <p className="break-words">Login required.</p>
+              </div>
+            )}
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

@@ -2,16 +2,6 @@
 
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getUrlWithQueryParams } from "@/lib/utils";
 import { INTERVIEW_ROUTE } from "../api/interview/route";
 import { Interview } from "@prisma/client";
@@ -19,7 +9,6 @@ import { useRouter } from "next/navigation";
 import Yup from "@/lib/yup-extended";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useSWRImmutable from "swr/immutable";
-import Link from "next/link";
 
 const fetcher = async (): Promise<Interview[]> => {
   const result = await fetch(
@@ -36,12 +25,16 @@ const validationSchema = Yup.object().shape({
 });
 
 type InterviewFormProps = {
-  loggedIn: boolean
-}
+  loggedIn: boolean;
+};
 
-export const InterviewForm : React.FC<InterviewFormProps> = ({loggedIn }) => {
+export const InterviewForm: React.FC<InterviewFormProps> = ({ loggedIn }) => {
   const { data, error, isLoading } = useSWRImmutable(INTERVIEW_ROUTE, fetcher);
-  const form = useForm({
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(validationSchema),
   });
   const router = useRouter();
@@ -51,59 +44,37 @@ export const InterviewForm : React.FC<InterviewFormProps> = ({loggedIn }) => {
 
   return (
     <div className="flex justify-center">
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(({ id }) =>
-            router.push("/interview/" + id)
-          )}
-          // className="w-2/3 space-y-6"
-          className="space-y-6"
-        >
-          <FormField
-            control={form.control}
-            name="id"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Current Interviews</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex flex-col space-y-1"
-                    name="selection"
-                  >
-                    {data &&
-                      data.map((item, i) => {
-                        return (
-                          <FormItem
-                            key={i}
-                            className="flex items-center space-x-3 space-y-0"
-                          >
-                            <FormControl>
-                              <RadioGroupItem value={item.id.toString()} />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              {item.title}
-                            </FormLabel>
-                          </FormItem>
-                        );
-                      })}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex justify-between">
-            <Button variant="ghost" type="submit">
-              Submit
-            </Button>
-              <Button variant="ghost" type="button" disabled={!loggedIn} onClick={() => router.push('/interview/create')}>
-                Create
-              </Button>
-          </div>
-        </form>
-      </Form>
+      <form
+        onSubmit={handleSubmit(({ id }) => {
+          return router.push("/interview/" + id);
+        })}
+        className="space-y-6"
+      >
+        {data?.map((field, id) => {
+          return (
+            <div key={id}>
+              <input
+                type="radio"
+                id={field.title}
+                value={field.id}
+                {...register("id")}
+              />
+              <label htmlFor={field.title}>{field.title}</label>
+            </div>
+          );
+        })}
+        <div>{errors.id?.message}</div>
+        <div className="flex justify-between">
+          <button>Submit</button>
+          <button
+            type="button"
+            disabled={!loggedIn}
+            onClick={() => router.push("/interview/create")}
+          >
+            Create
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

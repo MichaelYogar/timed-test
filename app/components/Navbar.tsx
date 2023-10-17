@@ -1,11 +1,9 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 
 type NavbarProps = {
-  user: string | undefined | null 
+  user: string | undefined | null;
 };
 
 export const NavBar: React.FC<NavbarProps> = ({ user }) => {
@@ -16,15 +14,15 @@ export const NavBar: React.FC<NavbarProps> = ({ user }) => {
         {user ? (
           <div>
             <div className="inline-block">
-              <Button className="h-0" variant="link" onClick={() => signOut()}>
+              <button className="h-0" onClick={() => signOut()}>
                 log out
-              </Button>
+              </button>
             </div>
           </div>
         ) : (
           <div>
             <Link href="/user/login">
-              <Button>login</Button>
+              <button>login</button>
             </Link>
           </div>
         )}

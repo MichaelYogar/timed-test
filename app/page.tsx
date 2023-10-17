@@ -1,4 +1,3 @@
-import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { NavBar } from "./components/Navbar";
 import { getServerSession } from "next-auth/next";
@@ -18,7 +17,6 @@ const Page = async () => {
         only on projects that you want to succeed.
         <p>Martin Fowler</p>
       </blockquote>
-      <Separator />
       <div className="flex justify-center my-2">
         <Link href="/interview/select">Demo</Link>
       </div>
