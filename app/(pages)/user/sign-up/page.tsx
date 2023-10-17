@@ -58,7 +58,7 @@ const Page = () => {
             {errors.password && <span>This field is required</span>}
           </div>
 
-          <Button variant="outline">Submit</Button>
+          <button>Submit</button>
         </form>
       </div>
     </div>

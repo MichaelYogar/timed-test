@@ -86,9 +86,7 @@ const Page = () => {
                   Create account
                 </button>
               </Link>
-              <Button size="lg" variant="outline">
-                Submit
-              </Button>
+              <button>Submit</button>
             </div>
           </form>
         </div>

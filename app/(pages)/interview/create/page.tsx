@@ -147,7 +147,7 @@ const Page = () => {
   if (error) return <div className="">{error}</div>;
 
   return (
-    <div className="container h-screen my-2">
+    <div className="container my-2">
       <NavBar user={session?.user!.name!} />
       <div className="flex flex-col items-center my-10">
         <form

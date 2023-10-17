@@ -21,7 +21,7 @@ const fetcher = async (): Promise<Interview[]> => {
 };
 
 const validationSchema = Yup.object().shape({
-  id: Yup.string().required("Please select one option."),
+  id: Yup.string().required("Select one option."),
 });
 
 type InterviewFormProps = {
@@ -71,16 +71,25 @@ export const InterviewForm: React.FC<InterviewFormProps> = ({ loggedIn }) => {
             </div>
           );
         })}
+        <div className="flex flex-row gap-2">
+          <button>Start</button>
+        </div>
         <div>{errors.id?.message}</div>
-        <div className="flex flex-row  gap-2">
-          <button>Submit</button>
-          <button
-            type="button"
-            disabled={!loggedIn}
-            onClick={() => router.push("/interview/create")}
-          >
-            Create
-          </button>
+        <div className="group">
+          <div className="inline-block">
+            <button
+              type="button"
+              disabled={!loggedIn}
+              onClick={() => router.push("/interview/create")}
+            >
+              Create new interview
+            </button>
+          </div>
+          {!loggedIn && (
+            <div className="w-full hide hidden group-hover:block group-hover:text-red-900">
+              <p className="break-words">Login required.</p>
+            </div>
+          )}
         </div>
       </form>
     </div>
