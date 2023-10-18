@@ -1,8 +1,8 @@
 "use client";
 
-import { AUTH_USER } from "@/app/api/auth/user/route";
 import { Button } from "@/app/components/ui/Button";
 import { WEBSITE_NAME } from "@/lib/constants";
+import { AUTH_USER } from "@/lib/routes";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 

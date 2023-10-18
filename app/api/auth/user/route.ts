@@ -2,8 +2,6 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-export const AUTH_USER = "/api/auth/user";
-
 export async function POST(req: Request) {
   const { username, password } = await req.json();
 
