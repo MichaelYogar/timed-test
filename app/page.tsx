@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { NavBar } from "./components/Navbar";
+import { NavBar } from "./components/ui/Navbar";
 import { getServerSession } from "next-auth/next";
 import { options } from "./api/auth/[...nextauth]/nextAuthOptions";
 import { WEBSITE_NAME } from "@/lib/constants";

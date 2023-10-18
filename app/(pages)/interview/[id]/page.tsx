@@ -2,8 +2,8 @@
 
 import { QUESTION_ROUTE } from "@/app/api/question/route";
 import { Finished } from "@/app/components/Finished";
-import { PreInterview } from "@/app/components/PreInterview";
-import { Question } from "@/app/components/Question";
+import { QuestionPreview } from "@/app/components/question/QuestionPreview";
+import { Question } from "@/app/components/question/Question";
 import { NextContext } from "@/lib/context";
 import { clearVideos } from "@/lib/idb";
 import { getUrlWithQueryParams } from "@/lib/utils";
@@ -58,7 +58,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   if (!start && index < data.length) {
     return (
-      <PreInterview
+      <QuestionPreview
         content={data[index].content}
         setStart={setStart}
         setStream={setStream}

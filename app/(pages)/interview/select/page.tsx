@@ -1,6 +1,6 @@
 import { options } from "@/app/api/auth/[...nextauth]/nextAuthOptions";
 import { InterviewForm } from "@/app/components/InterviewForm";
-import { NavBar } from "@/app/components/Navbar";
+import { NavBar } from "@/app/components/ui/Navbar";
 import { getServerSession } from "next-auth";
 
 const Page = async () => {
@@ -8,8 +8,8 @@ const Page = async () => {
 
   return (
     <div>
-      <NavBar user={session?.user?.name}/>
-      <InterviewForm loggedIn={session !== null}/>
+      <NavBar user={session?.user?.name} />
+      <InterviewForm loggedIn={session !== null} />
     </div>
   );
 };

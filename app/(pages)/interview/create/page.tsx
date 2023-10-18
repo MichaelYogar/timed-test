@@ -11,8 +11,8 @@ import { PlusIcon, MinusIcon } from "@radix-ui/react-icons";
 import { Interview } from "@prisma/client";
 import useSWR, { mutate } from "swr";
 import { useSession } from "next-auth/react";
-import { Spinner } from "@/app/components/Snipper";
-import { NavBar } from "@/app/components/Navbar";
+import { Spinner } from "@/app/components/ui/Snipper";
+import { NavBar } from "@/app/components/ui/Navbar";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/components/ui/Button";
 

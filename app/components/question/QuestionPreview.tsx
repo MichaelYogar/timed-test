@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import { CountdownTimer } from "./CountdownTimer";
+import { CountdownTimer } from "../CountdownTimer";
 
 type PreInterviewProps = {
   setStart(start: boolean): void;
   setStream(stream: MediaStream): void;
   content: string;
 };
-export const PreInterview: React.FC<PreInterviewProps> = ({
+export const QuestionPreview: React.FC<PreInterviewProps> = ({
   content,
   setStream,
   setStart,
@@ -39,12 +39,12 @@ export const PreInterview: React.FC<PreInterviewProps> = ({
 
   return (
     <div>
-      <div className="container flex h-screen flex-col gap-4">
+      <div className="container flex h-screen flex-col gap-4 items-center">
         <div className="m-auto">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            {content}
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
+            Question: {content}
           </h1>
-          <CountdownTimer setDone={setStart} seconds={3} minutes={0} />
+          <CountdownTimer setDone={setStart} seconds={0} minutes={5} />
         </div>
       </div>
     </div>

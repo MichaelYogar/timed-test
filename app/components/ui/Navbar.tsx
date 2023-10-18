@@ -1,7 +1,7 @@
 "use client";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
-import { Button } from "./ui/Button";
+import { Button } from "./Button";
 
 type NavbarProps = {
   user: string | undefined | null;

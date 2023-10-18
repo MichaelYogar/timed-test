@@ -3,11 +3,11 @@ import { NextContext } from "@/lib/context";
 import { Prisma } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { useContext, useState } from "react";
-import { Button } from "./ui/Button";
+import { Button } from "../ui/Button";
 
 const VideoRecording = dynamic(
   () =>
-    import("./video/VideoRecording").then((mod) => {
+    import("../video/VideoRecording").then((mod) => {
       return mod.VideoRecording;
     }),
   {
@@ -43,6 +43,7 @@ export const Question: React.FC<QuestionProps> = ({
     <div>
       {!done && (
         <div className="mb-4">
+          <p>Test</p>
           <CountdownTimer
             seconds={Number(result.seconds)}
             minutes={Number(result.minutes)}
