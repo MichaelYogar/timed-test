@@ -26,10 +26,12 @@ export const QuestionPreview: React.FC<PreInterviewProps> = ({
 
         setStream(cameraStream);
       } catch (e) {
-        if (e.name === "NotAllowedError") {
-          alert(
-            "Permission denied. Cannot access audio/video. Please reload page!"
-          );
+        if (e instanceof Error) {
+          if (e.name === "NotAllowedError") {
+            alert(
+              "Permission denied. Cannot access audio/video. Please reload page!"
+            );
+          }
         }
       }
     };

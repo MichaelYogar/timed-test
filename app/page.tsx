@@ -2,9 +2,6 @@ import Link from "next/link";
 import { NavBar } from "./components/ui/Navbar";
 import { getServerSession } from "next-auth/next";
 import { options } from "./api/auth/[...nextauth]/nextAuthOptions";
-import { WEBSITE_NAME } from "@/lib/constants";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
 
 const Page = async () => {
   const session = await getServerSession(options);

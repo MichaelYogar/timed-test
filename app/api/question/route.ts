@@ -1,11 +1,8 @@
 import prisma from "@/lib/prisma";
 import { getQSParamFromURL } from "@/lib/utils";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export const QUESTION_ROUTE = "/api/question/";
-
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: NextRequest & { url: string }) {
   const qs = getQSParamFromURL("id", req.url);
 
   const questions = await prisma.question.findMany({

@@ -3,13 +3,13 @@
 import { useForm } from "react-hook-form";
 
 import { getUrlWithQueryParams } from "@/lib/utils";
-import { INTERVIEW_ROUTE } from "../api/interview/route";
 import { Interview } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import Yup from "@/lib/yup-extended";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useSWRImmutable from "swr/immutable";
 import { Button } from "./ui/Button";
+import { INTERVIEW_ROUTE } from "@/lib/routes";
 
 const fetcher = async (): Promise<Interview[]> => {
   const result = await fetch(

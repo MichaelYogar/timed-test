@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { INTERVIEW_ROUTE } from "@/app/api/interview/route";
 import { getUrlWithQueryParams } from "@/lib/utils";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,6 +14,7 @@ import { Spinner } from "@/app/components/ui/Snipper";
 import { NavBar } from "@/app/components/ui/Navbar";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/components/ui/Button";
+import { INTERVIEW_ROUTE } from "@/lib/routes";
 
 const fetcher = async (): Promise<Interview[]> => {
   const result = await fetch(

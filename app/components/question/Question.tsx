@@ -15,11 +15,13 @@ const VideoRecording = dynamic(
   }
 );
 
-type QuestionProps =
+type Props =
   | Prisma.QuestionCreateInput & {
       stream: MediaStream | null;
       remaining: number;
     };
+
+type QuestionProps = Omit<Props, "Interview">;
 
 export const Question: React.FC<QuestionProps> = ({
   content,

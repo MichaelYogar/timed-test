@@ -1,6 +1,5 @@
 "use client";
 
-import { QUESTION_ROUTE } from "@/app/api/question/route";
 import { Finished } from "@/app/components/Finished";
 import { QuestionPreview } from "@/app/components/question/QuestionPreview";
 import { Question } from "@/app/components/question/Question";
@@ -9,6 +8,7 @@ import { clearVideos } from "@/lib/idb";
 import { getUrlWithQueryParams } from "@/lib/utils";
 import { useState } from "react";
 import useSWR from "swr";
+import { QUESTION_ROUTE } from "@/lib/routes";
 
 type PageProps = {
   params: { id: string };
