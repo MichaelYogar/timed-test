@@ -23,6 +23,7 @@ export const VideoRecording: React.FC<VideoProps> = ({
   const startRecording = async () => {
     if (stream) {
       recordRTCRef.current = new RecordRTCPromisesHandler(stream, {
+        mimeType: "video/webm;codecs=vp8",
         type: "video",
       });
 
