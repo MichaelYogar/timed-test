@@ -4,6 +4,24 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 export const options: NextAuthOptions = {
   pages: { signIn: "/user/login" },
+  callbacks: {
+    session: async ({ session, token }) => {
+      if (session?.user && token.sub) {
+        session.user.id = Number(token.sub);
+      }
+
+      return session;
+    },
+    jwt: async ({ user, token }) => {
+      if (user) {
+        token.sub = user.id;
+      }
+      return token;
+    },
+  },
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     CredentialsProvider({
       name: "Credentials",

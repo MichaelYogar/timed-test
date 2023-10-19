@@ -2,35 +2,26 @@
 
 import { useForm } from "react-hook-form";
 
-import { getUrlWithQueryParams } from "@/lib/utils";
+import { getUrlWithQueryParams as createUrlWithQueryString } from "@/lib/utils";
 import { Interview } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import Yup from "@/lib/yup-extended";
 import { yupResolver } from "@hookform/resolvers/yup";
-import useSWRImmutable from "swr/immutable";
 import { Button } from "./ui/Button";
 import { INTERVIEW_ROUTE } from "@/lib/routes";
-
-const fetcher = async (): Promise<Interview[]> => {
-  const result = await fetch(
-    getUrlWithQueryParams(INTERVIEW_ROUTE, { type: true }),
-    {
-      method: "GET",
-    }
-  );
-  return await result.json();
-};
+import useSWR from "swr";
 
 const validationSchema = Yup.object().shape({
   id: Yup.string().required("Select one option."),
 });
 
 type InterviewFormProps = {
-  loggedIn: boolean;
+  userId: number | undefined;
 };
 
-export const InterviewForm: React.FC<InterviewFormProps> = ({ loggedIn }) => {
-  const { data, error, isLoading } = useSWRImmutable(INTERVIEW_ROUTE, fetcher);
+export const SelectInterviewForm: React.FC<InterviewFormProps> = ({
+  userId,
+}) => {
   const {
     handleSubmit,
     register,
@@ -39,6 +30,20 @@ export const InterviewForm: React.FC<InterviewFormProps> = ({ loggedIn }) => {
     resolver: yupResolver(validationSchema),
   });
   const router = useRouter();
+
+  const fetcher = async (): Promise<Interview[]> => {
+    const queryParams = userId ? { userId: userId } : {};
+
+    const result = await fetch(
+      createUrlWithQueryString(INTERVIEW_ROUTE, queryParams),
+      {
+        method: "GET",
+      }
+    );
+    return await result.json();
+  };
+
+  const { data, error, isLoading } = useSWR(INTERVIEW_ROUTE, fetcher);
 
   if (isLoading) return <div>loading...</div>;
   if (error) return <div>{error}</div>;
@@ -97,13 +102,13 @@ export const InterviewForm: React.FC<InterviewFormProps> = ({ loggedIn }) => {
           <div className="inline-block">
             <Button
               type="button"
-              disabled={!loggedIn}
+              disabled={!userId}
               onClick={() => router.push("/interview/create")}
             >
               Create new interview
             </Button>
           </div>
-          {!loggedIn && (
+          {!userId && (
             <div className="w-full hide hidden group-hover:block group-hover:text-red-900">
               <p className="break-words">Login required.</p>
             </div>

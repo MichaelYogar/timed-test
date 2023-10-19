@@ -16,16 +16,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/app/components/ui/Button";
 import { INTERVIEW_ROUTE } from "@/lib/routes";
 
-const fetcher = async (): Promise<Interview[]> => {
-  const result = await fetch(
-    getUrlWithQueryParams(INTERVIEW_ROUTE, { type: true }),
-    {
-      method: "GET",
-    }
-  );
-  return await result.json();
-};
-
 const MIN_VALUE = 1;
 const MAX_VALUE = 5;
 const initialValue = {
@@ -45,10 +35,24 @@ type Inputs = {
 };
 
 const Page = () => {
-  const { data, error, isLoading } = useSWR(INTERVIEW_ROUTE, fetcher);
   const { data: session, status } = useSession();
   const [count, setCount] = useState(0);
   const router = useRouter();
+
+  const fetcher = async (): Promise<Interview[]> => {
+    const result = await fetch(
+      getUrlWithQueryParams(INTERVIEW_ROUTE, {
+        type: true,
+        userId: session?.user.id,
+      }),
+      {
+        method: "GET",
+      }
+    );
+    return await result.json();
+  };
+
+  const { data, error, isLoading } = useSWR(INTERVIEW_ROUTE, fetcher);
 
   const validationSchema = Yup.object({
     title: Yup.string()
@@ -110,12 +114,17 @@ const Page = () => {
   });
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    if (!session) {
+      alert("User must be signed in");
+      return;
+    }
+
     const response = await fetch(INTERVIEW_ROUTE, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, userId: session.user.id }),
     });
     if (response.status !== 201) {
       alert("Failed to create interview");

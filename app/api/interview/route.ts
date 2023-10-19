@@ -1,14 +1,17 @@
 import prisma from "@/lib/prisma";
 import { getQSParamFromURL } from "@/lib/utils";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest, res: NextApiResponse) {
-  const qs = getQSParamFromURL("type", req.url);
+  const userId = Number(getQSParamFromURL("userId", req.url));
 
   const interviews = await prisma.interview.findMany({
+    where: {
+      userId: userId ? userId : null,
+    },
     include: {
-      questions: qs === "true",
+      questions: true,
     },
   });
 
@@ -16,11 +19,10 @@ export async function GET(req: NextRequest, res: NextApiResponse) {
 }
 
 export async function POST(request: NextRequest) {
-  const { title, questions } = await request.json();
-  const token = request.cookies.get("asdf");
+  const { title, questions, userId } = await request.json();
 
   const interview = await prisma.interview.create({
-    data: { title },
+    data: { title, userId },
   });
 
   const data = questions.map((item) => {

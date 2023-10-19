@@ -1,5 +1,5 @@
 import { options } from "@/app/api/auth/[...nextauth]/nextAuthOptions";
-import { InterviewForm } from "@/app/components/InterviewForm";
+import { SelectInterviewForm } from "@/app/components/SelectInterviewForm";
 import { NavBar } from "@/app/components/ui/Navbar";
 import { getServerSession } from "next-auth";
 
@@ -9,7 +9,7 @@ const Page = async () => {
   return (
     <div>
       <NavBar user={session?.user?.name} />
-      <InterviewForm loggedIn={session !== null} />
+      <SelectInterviewForm userId={session?.user.id} />
     </div>
   );
 };
