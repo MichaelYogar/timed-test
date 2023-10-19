@@ -28,9 +28,7 @@ export const QuestionPreview: React.FC<PreInterviewProps> = ({
       } catch (e) {
         if (e instanceof Error) {
           if (e.name === "NotAllowedError") {
-            alert(
-              "Permission denied. Cannot access audio/video. Please reload page!"
-            );
+            alert("Permission denied. Cannot access audio/video!");
           }
         }
       }
@@ -46,7 +44,7 @@ export const QuestionPreview: React.FC<PreInterviewProps> = ({
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
             Question: {content}
           </h1>
-          <CountdownTimer setDone={setStart} seconds={0} minutes={5} />
+          <CountdownTimer setDone={setStart} seconds={30} minutes={0} />
         </div>
       </div>
     </div>
