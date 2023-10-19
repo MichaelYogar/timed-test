@@ -1,7 +1,9 @@
 import prisma from "@/lib/prisma";
 import { getQSParamFromURL } from "@/lib/utils";
 import { NextApiResponse } from "next";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { options } from "../auth/[...nextauth]/nextAuthOptions";
 
 export async function GET(req: NextRequest, res: NextApiResponse) {
   const userId = Number(getQSParamFromURL("userId", req.url));
@@ -19,6 +21,9 @@ export async function GET(req: NextRequest, res: NextApiResponse) {
 }
 
 export async function POST(request: NextRequest) {
+  const session = await getServerSession(options);
+  if (!session) return NextResponse.json("Unauthorized", { status: 401 });
+
   const { title, questions, userId } = await request.json();
 
   const interview = await prisma.interview.create({
