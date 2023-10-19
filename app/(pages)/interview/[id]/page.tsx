@@ -9,7 +9,6 @@ import { getUrlWithQueryParams } from "@/lib/utils";
 import { useState } from "react";
 import useSWR from "swr";
 import { QUESTION_ROUTE } from "@/lib/routes";
-import { useRouter } from "next/navigation";
 
 type PageProps = {
   params: { id: string };
@@ -32,7 +31,6 @@ const Page: React.FC<PageProps> = ({ params }) => {
   const [index, setIndex] = useState(0);
   const [start, setStart] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
-  const router = useRouter();
 
   const fetcher = async () => {
     if (!validateParam(params)) throw new Error("Invalid route param");

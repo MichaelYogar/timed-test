@@ -45,7 +45,6 @@ export const Question: React.FC<QuestionProps> = ({
     <div>
       {!done && (
         <div className="mb-4">
-          <p>Test</p>
           <CountdownTimer
             seconds={Number(result.seconds)}
             minutes={Number(result.minutes)}

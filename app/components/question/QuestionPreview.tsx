@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { CountdownTimer } from "../CountdownTimer";
+import { PREVIEW_SECONDS } from "@/lib/constants";
 
 type PreInterviewProps = {
   setStart(start: boolean): void;
@@ -38,14 +39,19 @@ export const QuestionPreview: React.FC<PreInterviewProps> = ({
   }, []);
 
   return (
-    <div>
-      <div className="container flex h-screen flex-col gap-4 items-center">
-        <div className="m-auto">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
-            Question: {content}
-          </h1>
-          <CountdownTimer setDone={setStart} seconds={30} minutes={0} />
-        </div>
+    <div className="container h-screen flex flex-col justify-center">
+      <div>
+        <h1 className="text-4xl font-extrabold lg:text-5xl text-center mb-[4rem]">
+          Starting...
+        </h1>
+      </div>
+      <div>
+        <CountdownTimer
+          preview={true}
+          setDone={setStart}
+          seconds={PREVIEW_SECONDS}
+          minutes={0}
+        />
       </div>
     </div>
   );

@@ -1,8 +1,13 @@
 import { useCountdown } from "@/app/hooks/useCountdown";
 import { FC, useEffect } from "react";
 
-export const CountdownTimer: FC<CountdownTimerProps> = ({
+type CountdownTimerExtendedProps = CountdownTimerProps & {
+  preview?: boolean;
+};
+
+export const CountdownTimer: FC<CountdownTimerExtendedProps> = ({
   setDone,
+  preview,
   ...props
 }) => {
   const [seconds, minutes, done] = useCountdown(props);
@@ -15,10 +20,27 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
   }, [done, setDone]);
 
   return (
-    <div className="container flex justify-center">
-      <div className="p-4 w-36 h-36 rounded-full border-2 border-black flex justify-center items-center flex-col">
-        <h1>{minutes <= -1 ? <span>-</span> : <div>minutes {minutes}</div>}</h1>
-        <h1>{seconds <= -1 ? <span>-</span> : <div>seconds {seconds}</div>}</h1>
+    <div className="container flex justify-center mt-6">
+      <div
+        className={`${
+          preview ? "animate-bounce" : ""
+        } p-4 w-36 h-36 rounded-full border-2 border-black flex justify-center items-center flex-col`}
+      >
+        {!preview && (
+          <h1>
+            {minutes <= -1 ? <span>-</span> : <div>minutes: {minutes}</div>}
+          </h1>
+        )}
+        <h1>
+          {seconds <= -1 ? (
+            <span>-</span>
+          ) : (
+            <div>
+              {!preview && "seconds:"}
+              {seconds}
+            </div>
+          )}
+        </h1>
       </div>
     </div>
   );
