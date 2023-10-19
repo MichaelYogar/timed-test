@@ -45,7 +45,8 @@ const Page = () => {
       if (redirectUrl) router.push(redirectUrl);
       else {
         router.refresh();
-        router.back();
+        // Hotfix for now.
+        router.push("/");
       }
     }
   };
