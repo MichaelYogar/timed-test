@@ -52,8 +52,8 @@ const Page = () => {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center mt-[-30px]">
-      <div className="md:border-[1px] border-gray-400 md:rounded-sm p-8 lg:w-[30%]">
+    <div className="h-screen flex items-center mt-[-30px]">
+      <div className="md:border-[1px] border-gray-400 md:rounded-sm p-8">
         <div className="mb-2">
           <h1 className="text-center">Sign in</h1>
           <h3 className="text-center text-sm">{`Use your ${WEBSITE_NAME} Account`}</h3>

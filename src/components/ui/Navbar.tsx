@@ -9,7 +9,7 @@ type NavbarProps = {
 
 export const NavBar: React.FC<NavbarProps> = ({ user }) => {
   return (
-    <div className="flex flex-row justify-between mt-2">
+    <div className="flex justify-end p-4 w-full">
       <div>{/* <p className="not-prose text-black">{user}</p> */}</div>
       {user ? (
         <div>

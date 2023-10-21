@@ -20,17 +20,16 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(options);
-
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
         <AuthProvider>
           <Theme>
-            <Container size="4">
-              <NavBar user={session?.user.name} />
-              <>{children}</>
-            </Container>
+            <div className="flex flex-col items-center">
+              <div className="max-w-[1196px]">
+                <>{children}</>
+              </div>
+            </div>
           </Theme>
         </AuthProvider>
       </body>
