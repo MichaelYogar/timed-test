@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { RecordRTCPromisesHandler } from "recordrtc";
+import RecordRTC, { RecordRTCPromisesHandler } from "recordrtc";
 import { addVideo } from "@/src/lib/idb";
 
 interface VideoProps {
@@ -23,7 +23,8 @@ export const VideoRecording: React.FC<VideoProps> = ({
   const startRecording = async () => {
     if (stream) {
       recordRTCRef.current = new RecordRTCPromisesHandler(stream, {
-        mimeType: "video/webm;codecs=vp8",
+        // TODO: find out why MediaRecorder.isTypeSupported(video/webm;codecs=vp8) return true but doesnt work on firefox
+        mimeType: "video/webm",
         type: "video",
       });
 
