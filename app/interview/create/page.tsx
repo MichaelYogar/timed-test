@@ -4,14 +4,13 @@ import React, { useState } from "react";
 import { getUrlWithQueryParams } from "@/lib/utils";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Yup from "../../../../lib/yup-extended";
+import Yup from "../../../lib/yup-extended";
 import { PlusIcon, MinusIcon } from "@radix-ui/react-icons";
 
 import { Interview } from "@prisma/client";
 import useSWR, { mutate } from "swr";
 import { useSession } from "next-auth/react";
 import { Spinner } from "@/app/components/ui/Snipper";
-import { NavBar } from "@/app/components/ui/Navbar";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/components/ui/Button";
 import { INTERVIEW_ROUTE } from "@/lib/routes";
@@ -158,7 +157,6 @@ const Page = () => {
 
   return (
     <div className="container my-2">
-      <NavBar user={session?.user!.name!} />
       <div className="flex flex-col items-center my-10">
         <form
           style={{ margin: "0 auto" }}

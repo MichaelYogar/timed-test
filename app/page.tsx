@@ -1,24 +1,31 @@
 import Link from "next/link";
-import { NavBar } from "./components/ui/Navbar";
 import { getServerSession } from "next-auth/next";
 import { options } from "./api/auth/[...nextauth]/nextAuthOptions";
+import Image from "next/image";
+import coffee from "../public/images/coffee.jpg";
+import { Button } from "@radix-ui/themes";
 
 const Page = async () => {
   const session = await getServerSession(options);
 
   return (
-    <article className="container mx-auto prose prose-sm md:prose prose-neutral pt-8 prose-a:text-blue-600 prose-p:text-black">
-      <NavBar user={session?.user!.name!} />
-      <div className="my-8">
-        <p>Currently developing wireframe...</p>
+    <div className="flex h-screen items-center mt-[-65px] gap-2 m-4">
+      <article className="flex flex-col  basis-1/2  prose prose-sm md:prose prose-neutral prose-a:text-blue-600">
+        <h1 className="inline">Practice makes perfect</h1>
+        <p className="inline">
+          Practice time based mock interviews created{" "}
+          <span className="underline underline-offset-2">by you for you</span>
+        </p>
+        <Link className="w-fit" href="/interview/select">
+          <Button size="3" variant="soft">
+            Try Demo
+          </Button>
+        </Link>
+      </article>
+      <div className="basis-1/2">
+        <Image src={coffee} alt="" />
       </div>
-      <blockquote className="mt-6 border-l-2 pl-6 italic">
-        When to use iterative development? You should use iterative development
-        only on projects that you want to succeed.
-        <p>Martin Fowler</p>
-      </blockquote>
-      <Link href="/interview/select">Try Demo</Link>
-    </article>
+    </div>
   );
 };
 
