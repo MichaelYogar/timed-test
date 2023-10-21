@@ -1,6 +1,12 @@
 import { useCountdown } from "@/src/hooks/useCountdown";
 import { FC, useEffect } from "react";
 
+interface CountdownTimerProps {
+  minutes: number;
+  seconds: number;
+  setDone?(flag: boolean): void;
+}
+
 type CountdownTimerExtendedProps = CountdownTimerProps & {
   preview?: boolean;
 };

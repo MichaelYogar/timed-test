@@ -1,5 +1,5 @@
 import { CountdownTimer } from "@/src/components/CountdownTimer";
-import { NextContext } from "@/src/lib/context";
+import { NextContext } from "@/src/context/NextContext";
 import { Prisma } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { useContext, useState } from "react";

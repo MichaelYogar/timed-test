@@ -3,7 +3,7 @@
 import { Finished } from "@/src/components/Finished";
 import { QuestionPreview } from "@/src/components/question/QuestionPreview";
 import { Question } from "@/src/components/question/Question";
-import { NextContext } from "@/src/lib/context";
+import { NextContext } from "@/src/context/NextContext";
 import { clearVideos } from "@/src/lib/idb";
 import { getUrlWithQueryParams } from "@/src/lib/utils";
 import { useState } from "react";
