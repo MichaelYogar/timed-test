@@ -42,9 +42,12 @@ const Page = () => {
     const url = new URL(result?.url as string);
     const redirectUrl = url.searchParams.get("callbackUrl")!;
     if (result.ok) {
-      if (redirectUrl) router.push(redirectUrl);
-      else {
-        router.refresh();
+      // Think its because the session doesnt know that you've been logged in
+      router.refresh();
+      if (redirectUrl) {
+        let newUrl = new URL(redirectUrl);
+        router.push(newUrl.pathname);
+      } else {
         // Hotfix for now.
         router.push("/");
       }
@@ -86,7 +89,7 @@ const Page = () => {
               <Link href="/user/sign-up">
                 <Button type="button">Create account</Button>
               </Link>
-              <Button>Submit</Button>
+              <button>Submit</button>
             </div>
           </form>
         </div>

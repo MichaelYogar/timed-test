@@ -106,21 +106,13 @@ export const SelectInterviewForm: React.FC<InterviewFormProps> = ({
             </Button>
             <div>{errors.id?.message}</div>
           </div>
-          <div className="group">
-            <div className="inline-block">
-              <Button
-                type="button"
-                disabled={!userId}
-                onClick={() => router.push("/interview/create")}
-              >
-                Create new interview
-              </Button>
-            </div>
-            {!userId && (
-              <div className="w-full hide hidden group-hover:block group-hover:text-red-900">
-                <p className="break-words">Login required.</p>
-              </div>
-            )}
+          <div className="inline-block">
+            <Button
+              type="button"
+              onClick={() => router.push("/interview/create")}
+            >
+              Create new interview
+            </Button>
           </div>
         </form>
       </div>

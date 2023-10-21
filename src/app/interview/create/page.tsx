@@ -221,14 +221,7 @@ const Page = () => {
               </div>
             );
           })}
-          <div className="group">
-            <Button disabled={status === "unauthenticated"}>Submit</Button>
-            {status === "unauthenticated" && (
-              <div className="w-full hide hidden group-hover:block group-hover:text-red-900">
-                <p className="break-words">Login required.</p>
-              </div>
-            )}
-          </div>
+          <Button>Submit</Button>
         </form>
       </div>
     </div>
