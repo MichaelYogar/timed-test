@@ -38,7 +38,7 @@ export const Question: React.FC<QuestionProps> = ({
 
   const handleSave = async (blob: Blob) => {
     const { invokeSaveAsDialog } = (await import("recordrtc")).default;
-    invokeSaveAsDialog(blob);
+    invokeSaveAsDialog(blob, "video.webm");
   };
 
   return (
