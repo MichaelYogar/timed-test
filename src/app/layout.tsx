@@ -27,7 +27,7 @@ export default async function RootLayout({
       <body className={`${inter.className}`}>
         <AuthProvider>
           <Theme>
-            <Container>
+            <Container size="4">
               <NavBar user={session?.user.name} />
               <>{children}</>
             </Container>

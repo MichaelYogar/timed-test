@@ -14,11 +14,9 @@ module.exports = {
           css: {
             h1: {
               marginTop: "0",
-              marginBottom: "0",
             },
             p: {
               marginTop: "0",
-              marginBottom: "0",
             },
             color: "rgb(22, 20, 12)",
           },
