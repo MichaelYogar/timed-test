@@ -9,6 +9,7 @@ import { getUrlWithQueryParams } from "@/src/lib/utils";
 import { useState } from "react";
 import useSWR from "swr";
 import { QUESTION_ROUTE } from "@/src/lib/routes";
+import Error from "next/error";
 
 type PageProps = {
   params: { id: string };
@@ -53,8 +54,11 @@ const Page: React.FC<PageProps> = ({ params }) => {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>{error.toString()}</p>;
 
-  if (data.length === 0) return <p>Failed to find data</p>;
-  if (index >= data.length) return <Finished />;
+  if (data.length > 0 && index >= data.length) return <Finished />;
+
+  if (data.length === 0) {
+    return <Error statusCode={400} />;
+  }
 
   if (!start && index < data.length) {
     return (
