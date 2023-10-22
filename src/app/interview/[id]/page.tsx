@@ -50,7 +50,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
     await clearVideos();
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  // if (isLoading) return <p>Loading...</p>;
   if (error) return <p>{error.toString()}</p>;
 
   if (data.length === 0) return <p>Failed to find data</p>;

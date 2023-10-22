@@ -147,12 +147,12 @@ const Page = () => {
     remove(index);
   };
 
-  if (isLoading)
-    return (
-      <div className="fixed top-1/2 left-1/2 translate-x-[-50%] trnaslate-y-[-50%]">
-        <Spinner />
-      </div>
-    );
+  // if (isLoading)
+  //   return (
+  //     <div className="fixed top-1/2 left-1/2 translate-x-[-50%] trnaslate-y-[-50%]">
+  //       <Spinner />
+  //     </div>
+  //   );
   if (error) return <div className="">{error}</div>;
 
   return (
