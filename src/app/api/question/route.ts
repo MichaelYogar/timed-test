@@ -3,11 +3,19 @@ import { getQSParamFromURL } from "@/src/lib/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest & { url: string }) {
-  const qs = getQSParamFromURL("id", req.url);
+  const id = Number(getQSParamFromURL("id", req.url));
+  const auth = getQSParamFromURL("auth", req.url);
+  console.log(id);
+  console.log(auth);
+
+  if (auth === "false" && id !== 1) {
+    console.log("I get here");
+    return NextResponse.json({ message: "unauthorized" }, { status: 401 });
+  }
 
   const questions = await prisma.question.findMany({
     where: {
-      interviewId: Number(qs),
+      interviewId: Number(id),
     },
   });
 
