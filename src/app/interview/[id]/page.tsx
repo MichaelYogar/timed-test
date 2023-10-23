@@ -66,7 +66,8 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   if (questions.length > 0 && index >= questions.length) return <Finished />;
 
-  if (!start && index < questions.length && index === 0) {
+  // Only preview first question
+  if (!start && index === 0) {
     return (
       <QuestionPreview
         content={questions[index].content}
