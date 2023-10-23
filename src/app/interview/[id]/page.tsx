@@ -9,6 +9,7 @@ import { getUrlWithQueryParams } from "@/src/lib/utils";
 import { useState } from "react";
 import useSWR from "swr";
 import { QUESTION_ROUTE } from "@/src/lib/routes";
+import NextError from "next/error";
 
 type PageProps = {
   params: { id: string };
@@ -33,7 +34,10 @@ const Page: React.FC<PageProps> = ({ params }) => {
   const [stream, setStream] = useState<MediaStream | null>(null);
 
   const fetcher = async () => {
-    if (!validateParam(params)) throw new Error("Invalid route param");
+    if (!validateParam(params)) {
+      const error = new Error("Invalid route param");
+      throw error;
+    }
 
     const result = await fetch(
       getUrlWithQueryParams(QUESTION_ROUTE, { id: params.id }),
@@ -42,7 +46,10 @@ const Page: React.FC<PageProps> = ({ params }) => {
     return await result.json();
   };
 
-  const { data, error, isLoading } = useSWR(QUESTION_ROUTE, fetcher);
+  const { data, error, isLoading } = useSWR<any, Error>(
+    QUESTION_ROUTE,
+    fetcher
+  );
 
   const handleNext = async () => {
     setIndex((prevIndex) => prevIndex + 1);
@@ -53,8 +60,13 @@ const Page: React.FC<PageProps> = ({ params }) => {
   if (isLoading) return <></>;
   if (error) return <p>{error.toString()}</p>;
 
-  if (data.length === 0) return <p>Failed to find data</p>;
-  if (index >= data.length) return <Finished />;
+  if (!data) return <></>;
+
+  if (data.length > 0 && index >= data.length) return <Finished />;
+
+  if (data.length === 0) {
+    return <NextError statusCode={400} />;
+  }
 
   if (!start && index < data.length) {
     return (
@@ -73,21 +85,19 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   return (
     <>
-      <div className="flex h-[calc(100dvh)] items-center">
+      <div className="h-[calc(100dvh)]">
         {index < data.length && (
           <>
             {start && (
-              <div className="container flex flex-col justify-center">
-                <NextContext.Provider value={{ handleNext }}>
-                  <Question
-                    remaining={data.length - index - 1}
-                    stream={stream}
-                    key={index}
-                    content={data[index].content}
-                    duration={data[index].duration}
-                  />
-                </NextContext.Provider>
-              </div>
+              <NextContext.Provider value={{ handleNext }}>
+                <Question
+                  remaining={data.length - index - 1}
+                  stream={stream}
+                  key={index}
+                  content={data[index].content}
+                  duration={data[index].duration}
+                />
+              </NextContext.Provider>
             )}
           </>
         )}

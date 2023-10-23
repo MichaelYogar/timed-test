@@ -26,7 +26,7 @@ export const CountdownTimer: FC<CountdownTimerExtendedProps> = ({
   }, [done, setDone]);
 
   return (
-    <div className="container flex justify-center mt-6">
+    <div className="container flex justify-center">
       <div
         className={`${
           preview ? "animate-bounce" : ""
@@ -34,12 +34,12 @@ export const CountdownTimer: FC<CountdownTimerExtendedProps> = ({
       >
         {!preview && (
           <h1>
-            {minutes <= -1 ? <span>-</span> : <div>minutes: {minutes}</div>}
+            {minutes <= -1 ? <span>0</span> : <div>minutes: {minutes}</div>}
           </h1>
         )}
         <h1>
           {seconds <= -1 ? (
-            <span>-</span>
+            <span>0</span>
           ) : (
             <div>
               {!preview && "seconds:"}
