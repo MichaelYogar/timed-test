@@ -10,7 +10,6 @@ interface SimpleTimerProps {
 
 export const SimpleTimer: FC<SimpleTimerProps> = ({ setDone, ...props }) => {
   const [seconds, minutes, done] = useCountdown(props);
-  console.log(minutes);
 
   const formatSeconds = (digit: number) =>
     digit > 0 && digit < 10 ? `0${digit}` : digit;

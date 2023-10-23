@@ -34,7 +34,7 @@ export const SelectInterviewForm: React.FC<InterviewFormProps> = ({
   });
   const router = useRouter();
   const pathName = usePathname();
-  const key = `/api/data/${pathName}`;
+  const key = `/page/${pathName}`;
 
   const fetcher = async (): Promise<Interview[]> => {
     const queryParams = userId ? { userId: userId } : {};
@@ -74,6 +74,7 @@ export const SelectInterviewForm: React.FC<InterviewFormProps> = ({
       >
         <form
           onSubmit={handleSubmit(({ id }) => {
+            localStorage.setItem("asdf", JSON.stringify(data));
             return router.push("/interview/" + id);
           })}
           className="space-y-6 relative"
@@ -88,7 +89,7 @@ export const SelectInterviewForm: React.FC<InterviewFormProps> = ({
                       type="radio"
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "
                       id={field.title}
-                      value={field.id}
+                      value={id}
                       {...register("id")}
                     />
                     <label htmlFor={field.title} className="ml-2 ">

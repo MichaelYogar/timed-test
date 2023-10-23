@@ -5,12 +5,10 @@ import { QuestionPreview } from "@/src/components/question/QuestionPreview";
 import { Question } from "@/src/components/question/Question";
 import { NextContext } from "@/src/context/NextContext";
 import { clearVideos } from "@/src/lib/idb";
-import { getUrlWithQueryParams as createUrlWithQueryParams } from "@/src/lib/utils";
 import { useState } from "react";
 import useSWR from "swr";
 import { QUESTION_ROUTE } from "@/src/lib/routes";
 import NextError from "next/error";
-import { useSession } from "next-auth/react";
 import { StatusError } from "@/src/lib/StatusError";
 
 type PageProps = {
@@ -34,30 +32,18 @@ const Page: React.FC<PageProps> = ({ params }) => {
   const [index, setIndex] = useState(0);
   const [start, setStart] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
-  const session = useSession();
 
   const fetcher = async () => {
     if (!validateParam(params)) throw new Error("Invalid route param");
 
-    const url = createUrlWithQueryParams(QUESTION_ROUTE, {
-      id: params.id,
-      auth: session && session.status === "authenticated",
-    });
+    const value = window.localStorage.getItem("asdf");
 
-    try {
-      const result = await fetch(url, { method: "GET" });
-
-      if (result.status !== 200) throw new Error();
-
-      const json = await result.json();
-      return json;
-    } catch (e) {
-      if (e instanceof Error) {
-        const error = new StatusError();
-        error.status = 400;
-        throw error;
-      }
+    if (!!value) {
+      const result: any[] = JSON.parse(value);
+      return result[params.id].questions;
     }
+
+    return undefined;
   };
 
   const {
@@ -80,7 +66,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   if (questions.length > 0 && index >= questions.length) return <Finished />;
 
-  if (!start && index < questions.length) {
+  if (!start && index < questions.length && index === 0) {
     return (
       <QuestionPreview
         content={questions[index].content}
@@ -102,9 +88,9 @@ const Page: React.FC<PageProps> = ({ params }) => {
           {start && (
             <NextContext.Provider value={{ handleNext }}>
               <Question
+                key={index}
                 remaining={questions.length - index - 1}
                 stream={stream}
-                key={index}
                 content={questions[index].content}
                 duration={questions[index].duration}
               />
