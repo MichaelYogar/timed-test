@@ -9,7 +9,7 @@ import { getUrlWithQueryParams } from "@/src/lib/utils";
 import { useState } from "react";
 import useSWR from "swr";
 import { QUESTION_ROUTE } from "@/src/lib/routes";
-import Error from "next/error";
+import NextError from "next/error";
 
 type PageProps = {
   params: { id: string };
@@ -34,7 +34,10 @@ const Page: React.FC<PageProps> = ({ params }) => {
   const [stream, setStream] = useState<MediaStream | null>(null);
 
   const fetcher = async () => {
-    if (!validateParam(params)) throw new Error("Invalid route param");
+    if (!validateParam(params)) {
+      const error = new Error("Invalid route param");
+      throw error;
+    }
 
     const result = await fetch(
       getUrlWithQueryParams(QUESTION_ROUTE, { id: params.id }),
@@ -43,7 +46,10 @@ const Page: React.FC<PageProps> = ({ params }) => {
     return await result.json();
   };
 
-  const { data, error, isLoading } = useSWR(QUESTION_ROUTE, fetcher);
+  const { data, error, isLoading } = useSWR<any, Error>(
+    QUESTION_ROUTE,
+    fetcher
+  );
 
   const handleNext = async () => {
     setIndex((prevIndex) => prevIndex + 1);
@@ -59,7 +65,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
   if (data.length > 0 && index >= data.length) return <Finished />;
 
   if (data.length === 0) {
-    return <Error statusCode={400} />;
+    return <NextError statusCode={400} />;
   }
 
   if (!start && index < data.length) {
