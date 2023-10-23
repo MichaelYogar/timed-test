@@ -28,39 +28,37 @@ const validateParam = (params) => {
   );
 };
 
+const fetcher = async (params) => {
+  if (!validateParam(params)) throw new Error("Invalid route param");
+
+  const value = window.localStorage.getItem("asdf");
+
+  if (!!value) {
+    const result: any[] = JSON.parse(value);
+    const id = Number(params.id);
+    return result[id].questions;
+  }
+
+  return undefined;
+};
+
 const Page: React.FC<PageProps> = ({ params }) => {
   const [index, setIndex] = useState(0);
-  const [start, setStart] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [preview, setPreview] = useState(true);
 
   useEffect(() => {
-    if (preview && start) setPreview(false);
-  }, [start, preview]);
-
-  const fetcher = async () => {
-    if (!validateParam(params)) throw new Error("Invalid route param");
-
-    const value = window.localStorage.getItem("asdf");
-
-    if (!!value) {
-      const result: any[] = JSON.parse(value);
-      const id = Number(params.id);
-      return result[id].questions;
-    }
-
-    return undefined;
-  };
+    if (preview) setPreview(false);
+  }, [preview]);
 
   const {
     data: questions,
     error,
     isLoading,
-  } = useSWR<any, StatusError>(QUESTION_ROUTE, fetcher);
+  } = useSWR<any, StatusError>(QUESTION_ROUTE, () => fetcher(params));
 
   const handleNext = async () => {
     setIndex((prevIndex) => prevIndex + 1);
-    setStart(false);
     await clearVideos();
   };
 
@@ -71,18 +69,19 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   if (questions.length > 0 && index >= questions.length) return <Finished />;
 
+  console.log(preview);
+
   if (preview) {
     return (
       <QuestionPreview
         content={questions[index].content}
-        setStart={setStart}
         setStream={setStream}
       />
     );
   }
 
   if (!stream) {
-    alert("Failed to start recording...");
+    console.log("No stream");
     return <></>;
   }
 
