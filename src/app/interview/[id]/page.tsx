@@ -5,7 +5,7 @@ import { QuestionPreview } from "@/src/components/question/QuestionPreview";
 import { Question } from "@/src/components/question/Question";
 import { NextContext } from "@/src/context/NextContext";
 import { clearVideos } from "@/src/lib/idb";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { QUESTION_ROUTE } from "@/src/lib/routes";
 import NextError from "next/error";
@@ -32,6 +32,11 @@ const Page: React.FC<PageProps> = ({ params }) => {
   const [index, setIndex] = useState(0);
   const [start, setStart] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [preview, setPreview] = useState(true);
+
+  useEffect(() => {
+    if (preview && start) setPreview(false);
+  }, [start, preview]);
 
   const fetcher = async () => {
     if (!validateParam(params)) throw new Error("Invalid route param");
@@ -40,7 +45,8 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
     if (!!value) {
       const result: any[] = JSON.parse(value);
-      return result[params.id].questions;
+      const id = Number(params.id);
+      return result[id].questions;
     }
 
     return undefined;
@@ -58,16 +64,14 @@ const Page: React.FC<PageProps> = ({ params }) => {
     await clearVideos();
   };
 
-  if (error) {
+  if (error)
     return <NextError statusCode={error.status ? error.status : 400} />;
-  }
 
   if (isLoading || !questions) return <></>;
 
   if (questions.length > 0 && index >= questions.length) return <Finished />;
 
-  // Only preview first question
-  if (!start && index === 0) {
+  if (preview) {
     return (
       <QuestionPreview
         content={questions[index].content}
@@ -85,19 +89,15 @@ const Page: React.FC<PageProps> = ({ params }) => {
   return (
     <div className="h-[calc(100dvh)]">
       {index < questions.length && (
-        <>
-          {start && (
-            <NextContext.Provider value={{ handleNext }}>
-              <Question
-                key={index}
-                remaining={questions.length - index - 1}
-                stream={stream}
-                content={questions[index].content}
-                duration={questions[index].duration}
-              />
-            </NextContext.Provider>
-          )}
-        </>
+        <NextContext.Provider value={{ handleNext }}>
+          <Question
+            key={index}
+            remaining={questions.length - index - 1}
+            stream={stream}
+            content={questions[index].content}
+            duration={questions[index].duration}
+          />
+        </NextContext.Provider>
       )}
     </div>
   );

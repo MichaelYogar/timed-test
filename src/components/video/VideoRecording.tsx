@@ -34,6 +34,7 @@ export const VideoRecording: React.FC<VideoProps> = ({
         .catch((e) => alert(e));
 
       setRecording(true);
+      setBlob(null);
     } else {
       alert("Failed to start recording");
     }
