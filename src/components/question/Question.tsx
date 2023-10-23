@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { useContext, useState } from "react";
 import { Button } from "../ui/Button";
+import { SimpleTimer } from "../SimpleTimer";
 
 const VideoRecording = dynamic(
   () =>
@@ -43,37 +44,35 @@ export const Question: React.FC<QuestionProps> = ({
 
   return (
     <div>
-      {!done && (
-        <div className="mb-4">
-          <CountdownTimer
+      <div className="grid grid-cols-1 justify-items-center">
+        <h1>Question: {content}</h1>
+        {!blob && (
+          <SimpleTimer
             seconds={Number(result.seconds)}
             minutes={Number(result.minutes)}
             setDone={setDone}
           />
-        </div>
-      )}
-      <div className="container flex justify-center">
+        )}
+      </div>
+      <div>
         <VideoRecording
           setBlob={setBlob}
           stream={stream}
           setDone={setDone}
           done={done}
         />
-      </div>
-      {blob && (
-        <div className="flex flex-col items-center">
-          <h1>Question: {content}</h1>
-          <div className="flex space-between">
-            <div>
+        {blob && (
+          <div>
+            <div className="grid grid-cols-2">
               <Button onClick={() => handleSave(blob)}>Save</Button>
+              <Button disabled={!done} onClick={handleNext}>
+                {remaining === 0 ? "Finish" : "Next"}
+              </Button>
             </div>
-            <Button disabled={!done} onClick={handleNext}>
-              {remaining === 0 ? "Finish" : "Next"}
-            </Button>
+            <p>Remaining Questions: {remaining}</p>
           </div>
-          <p>Remaining Questions: {remaining}</p>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

@@ -54,6 +54,8 @@ const Page: React.FC<PageProps> = ({ params }) => {
   // if (isLoading) return <p>Loading...</p>;
   if (error) return <p>{error.toString()}</p>;
 
+  if (!data) return <></>;
+
   if (data.length > 0 && index >= data.length) return <Finished />;
 
   if (data.length === 0) {
@@ -77,21 +79,19 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   return (
     <>
-      <div className="flex h-[calc(100dvh)] items-center">
+      <div className="h-[calc(100dvh)]">
         {index < data.length && (
           <>
             {start && (
-              <div className="container flex flex-col justify-center">
-                <NextContext.Provider value={{ handleNext }}>
-                  <Question
-                    remaining={data.length - index - 1}
-                    stream={stream}
-                    key={index}
-                    content={data[index].content}
-                    duration={data[index].duration}
-                  />
-                </NextContext.Provider>
-              </div>
+              <NextContext.Provider value={{ handleNext }}>
+                <Question
+                  remaining={data.length - index - 1}
+                  stream={stream}
+                  key={index}
+                  content={data[index].content}
+                  duration={data[index].duration}
+                />
+              </NextContext.Provider>
             )}
           </>
         )}
