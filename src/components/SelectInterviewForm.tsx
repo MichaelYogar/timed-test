@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { usePathname } from "next/navigation";
 
 import { getUrlWithQueryParams as createUrlWithQueryString } from "@/src/lib/utils";
 import { Interview } from "@prisma/client";
@@ -8,9 +9,10 @@ import { useRouter } from "next/navigation";
 import Yup from "@/src/lib/yup-extended";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "./ui/Button";
-import { INTERVIEW_ROUTE } from "@/src/lib/routes";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { Text } from "@radix-ui/themes";
+import { useEffect } from "react";
+import { INTERVIEW_ROUTE } from "../lib/routes";
 
 const validationSchema = Yup.object().shape({
   id: Yup.string().required("Select one option."),
@@ -31,6 +33,8 @@ export const SelectInterviewForm: React.FC<InterviewFormProps> = ({
     resolver: yupResolver(validationSchema),
   });
   const router = useRouter();
+  const pathName = usePathname();
+  const key = `/api/data/${pathName}`;
 
   const fetcher = async (): Promise<Interview[]> => {
     const queryParams = userId ? { userId: userId } : {};
@@ -44,9 +48,19 @@ export const SelectInterviewForm: React.FC<InterviewFormProps> = ({
     return await result.json();
   };
 
-  const { data, error, isLoading } = useSWR(INTERVIEW_ROUTE, fetcher);
+  const { data, error, isLoading } = useSWR(key, fetcher, {
+    revalidateOnMount: true,
+    revalidateOnFocus: true,
+  });
 
-  if (isLoading) return <div>loading...</div>;
+  useEffect(() => {
+    // Clear the data when the component unmounts (leaves the page)
+    return () => {
+      mutate(key, null);
+    };
+  }, [key]);
+
+  // if (isLoading) return <div>loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
