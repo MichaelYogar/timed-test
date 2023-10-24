@@ -60,11 +60,11 @@ export const SelectInterviewForm: React.FC<InterviewFormProps> = ({
     };
   }, [key]);
 
-  // if (isLoading) return <div>loading...</div>;
   if (error) return <div>{error}</div>;
+  if (isLoading) return <></>;
 
   return (
-    <div className="h-screen">
+    <div className="h-screen w-screen">
       <div
         style={{
           margin: "auto",

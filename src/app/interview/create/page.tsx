@@ -10,7 +10,6 @@ import { PlusIcon, MinusIcon } from "@radix-ui/react-icons";
 import { Interview } from "@prisma/client";
 import useSWR, { mutate } from "swr";
 import { useSession } from "next-auth/react";
-import { Spinner } from "@/src/components/ui/Snipper";
 import { useRouter } from "next/navigation";
 import { Button } from "@/src/components/ui/Button";
 import { INTERVIEW_ROUTE } from "@/src/lib/routes";
@@ -125,6 +124,7 @@ const Page = () => {
       },
       body: JSON.stringify({ ...data, userId: session.user.id }),
     });
+
     if (response.status !== 201) {
       alert("Failed to create interview");
       return;
