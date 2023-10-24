@@ -26,7 +26,7 @@ export default async function RootLayout({
         <AuthProvider>
           <Theme>
             <div className="flex flex-col items-center">
-              <div className="max-w-[1196px]">
+              <div className="w-[80%] max-w-[1024px]">
                 <>{children}</>
               </div>
             </div>

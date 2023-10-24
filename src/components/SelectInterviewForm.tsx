@@ -64,11 +64,10 @@ export const SelectInterviewForm: React.FC<InterviewFormProps> = ({
   if (isLoading) return <></>;
 
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen">
       <div
         style={{
           margin: "auto",
-          maxWidth: "90vw",
           width: "640px",
         }}
       >
