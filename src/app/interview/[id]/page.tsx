@@ -43,19 +43,19 @@ const fetcher = async (params) => {
 };
 
 const Page: React.FC<PageProps> = ({ params }) => {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(-1);
   const [stream, setStream] = useState<MediaStream | null>(null);
-  const [preview, setPreview] = useState(true);
-
-  useEffect(() => {
-    if (preview) setPreview(false);
-  }, [preview]);
+  const [start, setStart] = useState(false);
 
   const {
     data: questions,
     error,
     isLoading,
   } = useSWR<any, StatusError>(QUESTION_ROUTE, () => fetcher(params));
+
+  useEffect(() => {
+    if (start) setIndex(0);
+  }, [start]);
 
   const handleNext = async () => {
     setIndex((prevIndex) => prevIndex + 1);
@@ -69,13 +69,8 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   if (questions.length > 0 && index >= questions.length) return <Finished />;
 
-  if (preview) {
-    return (
-      <QuestionPreview
-        content={questions[index].content}
-        setStream={setStream}
-      />
-    );
+  if (index === -1) {
+    return <QuestionPreview setStream={setStream} setDone={setStart} />;
   }
 
   if (!stream) {

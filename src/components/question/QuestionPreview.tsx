@@ -4,10 +4,10 @@ import { PREVIEW_SECONDS } from "@/src/lib/constants";
 
 type PreInterviewProps = {
   setStream(stream: MediaStream): void;
-  content: string;
+  setDone(done: boolean): void;
 };
 export const QuestionPreview: React.FC<PreInterviewProps> = ({
-  content,
+  setDone,
   setStream,
 }) => {
   useEffect(() => {
@@ -44,7 +44,12 @@ export const QuestionPreview: React.FC<PreInterviewProps> = ({
         </h1>
       </div>
       <div>
-        <CountdownTimer preview={true} seconds={PREVIEW_SECONDS} minutes={0} />
+        <CountdownTimer
+          setDone={setDone}
+          preview={true}
+          seconds={PREVIEW_SECONDS}
+          minutes={0}
+        />
       </div>
     </div>
   );

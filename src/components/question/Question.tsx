@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useContext, useState } from "react";
 import { Button } from "../ui/Button";
 import { SimpleTimer } from "../SimpleTimer";
+import { Text } from "@radix-ui/themes";
 
 const VideoRecording = dynamic(
   () =>
@@ -44,7 +45,7 @@ export const Question: React.FC<QuestionProps> = ({
   return (
     <div>
       <div className="grid grid-cols-1 justify-items-center">
-        <h1>Question: {content}</h1>
+        <Text size="8">{content}</Text>
         {!blob && (
           <SimpleTimer
             seconds={Number(result.seconds)}
