@@ -2,6 +2,7 @@
 
 import { Button } from "@/src/components/ui/Button";
 import { WEBSITE_NAME } from "@/src/lib/constants";
+import { Text } from "@radix-ui/themes";
 import { SignInResponse, signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -54,11 +55,18 @@ const Page = () => {
   };
 
   return (
-    <div className="h-screen flex items-center mt-[-30px]">
-      <div className="md:border-[1px] border-gray-400 md:rounded-sm p-8">
+    <div className="h-screen flex items-center justify-center mt-[-30px]">
+      <div className="md:border-[1px] border-gray-400 md:rounded-sm p-8 w-1/2">
         <div className="mb-2">
-          <h1 className="text-center">Sign in</h1>
-          <h3 className="text-center text-sm">{`Use your ${WEBSITE_NAME} Account`}</h3>
+          <Text as="div" weight="bold" size="6" className="text-center">
+            Sign in
+          </Text>
+          <Text
+            as="div"
+            weight="medium"
+            size="3"
+            className="text-center text-sm"
+          >{`Use your ${WEBSITE_NAME} Account`}</Text>
         </div>
         <div>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -77,7 +85,7 @@ const Page = () => {
                 id="password"
                 {...register("password", { required: true })}
               />
-              {errors.password && <span>This field is required</span>}
+              {errors.password && <Text>This field is required</Text>}
               <p className="mt-2 text-sm text-red-600 dark:text-red-500">
                 <span className="font-medium">
                   {errors.error && <span>{errors.error.message}</span>}

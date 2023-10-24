@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import RecordRTC, { RecordRTCPromisesHandler } from "recordrtc";
+import { RecordRTCPromisesHandler } from "recordrtc";
 import { addVideo } from "@/src/lib/idb";
 import { Button } from "../ui/Button";
 

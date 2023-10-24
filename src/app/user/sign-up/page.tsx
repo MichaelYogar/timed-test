@@ -3,6 +3,7 @@
 import { Button } from "@/src/components/ui/Button";
 import { WEBSITE_NAME } from "@/src/lib/constants";
 import { AUTH_USER } from "@/src/lib/routes";
+import { Text } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -37,8 +38,13 @@ const Page = () => {
 
   return (
     <div className="h-screen flex items-center justify-center mt-[-30px]">
-      <div className="md:border-[1px] border-gray-400 md:rounded-sm p-8">
-        <h1 className="font-bold text-lg mb-2">{`Create a ${WEBSITE_NAME} Account`}</h1>
+      <div className="md:border-[1px] border-gray-400 md:rounded-sm p-8 w-1/2">
+        <Text
+          weight="bold"
+          size="6"
+          as="div"
+          className="mb-2 text-center"
+        >{`Create a ${WEBSITE_NAME} Account`}</Text>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6">
             <label htmlFor="username">Your username</label>
