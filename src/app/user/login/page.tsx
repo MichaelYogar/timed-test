@@ -96,7 +96,7 @@ const Page = () => {
               <Link href="/user/sign-up">
                 <Button type="button">Create account</Button>
               </Link>
-              <button>Submit</button>
+              <Button>Submit</Button>
             </div>
           </form>
         </div>
