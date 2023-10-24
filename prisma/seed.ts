@@ -1,4 +1,5 @@
-import prisma from "../../prep/src/lib/prisma";
+import prisma from "@/src/lib/prisma";
+
 async function main() {
   //   const interview = {
   //     content: "Tell me about yourself?",
