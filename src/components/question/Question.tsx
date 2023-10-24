@@ -43,35 +43,46 @@ export const Question: React.FC<QuestionProps> = ({
   };
 
   return (
-    <div>
-      <div className="grid grid-cols-1 justify-items-center">
-        <Text size="8">{content}</Text>
-        {!blob && (
-          <SimpleTimer
-            seconds={Number(result.seconds)}
-            minutes={Number(result.minutes)}
-            setDone={setDone}
-          />
-        )}
-      </div>
+    <div className="h-screen grid grid-cols-1 justify-items-center items-center">
       <div>
-        <VideoRecording
-          setBlob={setBlob}
-          stream={stream}
-          setDone={setDone}
-          done={done}
-        />
-        {blob && (
-          <div>
-            <div className="grid grid-cols-2">
-              <Button onClick={() => handleSave(blob)}>Save</Button>
-              <Button disabled={!done} onClick={handleNext}>
-                {remaining === 0 ? "Finish" : "Next"}
-              </Button>
+        <div className="grid grid-cols-1 justify-items-center">
+          {!blob && (
+            <div className="flex flex-col items-center">
+              <Text className="text-center" size="8">
+                {content}
+              </Text>
+              <SimpleTimer
+                seconds={Number(result.seconds)}
+                minutes={Number(result.minutes)}
+                setDone={setDone}
+              />
             </div>
-            <p>Remaining Questions: {remaining}</p>
-          </div>
-        )}
+          )}
+        </div>
+        <div>
+          <VideoRecording
+            setBlob={setBlob}
+            stream={stream}
+            setDone={setDone}
+            done={done}
+          />
+          {blob && (
+            <div className="grid grid-rows-2 justify-items-center">
+              <Text className="text-center h-fit" size="8">
+                {content}
+              </Text>
+              <div className="grid grid-cols-1 gri-rows-1 justify-items-center">
+                <div className="grid grid-cols-2 w-fit">
+                  <Button onClick={() => handleSave(blob)}>Save</Button>
+                  <Button disabled={!done} onClick={handleNext}>
+                    {remaining === 0 ? "Finish" : "Next"}
+                  </Button>
+                </div>
+                <p>Remaining Questions: {remaining}</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

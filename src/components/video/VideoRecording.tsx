@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import RecordRTC, { RecordRTCPromisesHandler } from "recordrtc";
 import { addVideo } from "@/src/lib/idb";
+import { Button } from "../ui/Button";
 
 interface VideoProps {
   done: Boolean;
@@ -76,8 +77,8 @@ export const VideoRecording: React.FC<VideoProps> = ({
             />
           </>
         )}
-        <div style={{ float: "right" }}>
-          {recording && <button onClick={handleStop}>stop</button>}
+        <div style={{ float: "right", marginTop: "4px" }}>
+          {recording && <Button onClick={handleStop}>stop</Button>}
         </div>
       </header>
     </div>
