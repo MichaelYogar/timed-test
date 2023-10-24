@@ -11,8 +11,6 @@ Yup.addMethod<Yup.StringSchema>(
   "unique",
   function (msg: string, data: string[]) {
     return this.test("uniqueIn", msg, function (value) {
-      console.log(value);
-      console.log(data);
       if (!value) return false;
       if (!data) return false;
       return !data.includes(value);

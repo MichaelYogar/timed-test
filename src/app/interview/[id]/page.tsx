@@ -69,8 +69,6 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   if (questions.length > 0 && index >= questions.length) return <Finished />;
 
-  console.log(preview);
-
   if (preview) {
     return (
       <QuestionPreview
@@ -81,7 +79,6 @@ const Page: React.FC<PageProps> = ({ params }) => {
   }
 
   if (!stream) {
-    console.log("No stream");
     return <></>;
   }
 

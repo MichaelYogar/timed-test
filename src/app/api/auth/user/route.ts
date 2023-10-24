@@ -12,7 +12,6 @@ export async function POST(req: Request) {
     // TODO: Workaround because instanceof not working - https://github.com/prisma/prisma/issues/12128
     if (error.constructor.name === Prisma.PrismaClientKnownRequestError.name) {
       if (error.code === "P2002") {
-        console.log(`The username '${username}' already exists`);
         return NextResponse.json({ error }, { status: 409 });
       }
     }

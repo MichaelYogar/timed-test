@@ -26,12 +26,10 @@ export const VideoRecording: React.FC<VideoProps> = ({
         // TODO: find out why MediaRecorder.isTypeSupported(video/webm;codecs=vp8) return true but doesnt work on firefox
         mimeType: "video/webm",
         type: "video",
+        disableLogs: true,
       });
 
-      recordRTCRef
-        .current!.startRecording()
-        .then(() => console.log("success"))
-        .catch((e) => alert(e));
+      recordRTCRef.current!.startRecording().then(() => console.log("success"));
 
       setRecording(true);
       setBlob(null);

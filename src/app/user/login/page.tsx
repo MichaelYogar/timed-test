@@ -31,7 +31,6 @@ const Page = () => {
     })) as SignInResponse;
 
     if (result.status === 401) {
-      console.log(errors);
       setError("error", {
         type: "custom",
         message: "Incorrect username or password",
