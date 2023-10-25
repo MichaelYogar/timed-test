@@ -16,7 +16,7 @@ const Page = async () => {
         <article className="flex flex-col sm:basis-2/3  prose prose-sm md:prose prose-neutral prose-a:text-blue-600">
           <Text mb="2" weight="bold" size="9">
             Practice makes{" "}
-            <Text as="span" color="grass">
+            <Text as="span" style={{ color: "rgb(85,162,133)" }}>
               perfect
             </Text>
           </Text>
