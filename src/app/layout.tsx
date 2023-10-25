@@ -6,7 +6,7 @@ import AuthProvider from "../context/AuthProvider";
 import { NavBar } from "../components/ui/Navbar";
 import { getServerSession } from "next-auth";
 import { options } from "./api/auth/[...nextauth]/nextAuthOptions";
-import { Container, Theme } from "@radix-ui/themes";
+import { Container, Text, Theme } from "@radix-ui/themes";
 
 const inter = Inter({ subsets: ["latin"] });
 
