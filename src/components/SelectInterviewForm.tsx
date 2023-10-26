@@ -9,7 +9,7 @@ import { Button } from "./ui/Button";
 import { Text } from "@radix-ui/themes";
 
 const validationSchema = Yup.object().shape({
-  id: Yup.string().required("Select one option."),
+  id: Yup.string().required("Select option."),
 });
 
 export const SelectInterviewForm = ({ data }: { data: any }) => {
