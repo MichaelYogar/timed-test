@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import * as Icons from "./icons";
 import { a, useSpring, animated } from "@react-spring/web";
 import useMeasure from "react-use-measure";
+import { Text } from "@radix-ui/themes";
 
 function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -33,7 +34,7 @@ export const Tree = ({
     Icons[`${children ? (open ? "Minus" : "Plus") : "Close"}SquareO`];
 
   return (
-    <div className="w-[100px]">
+    <div>
       <div className="flex items-center">
         <Icon
           onClick={() => setOpen((prev) => !prev)}
@@ -45,7 +46,7 @@ export const Tree = ({
             verticalAlign: "middle",
           }}
         />
-        <span>{content}</span>
+        <Text size="4">{content}</Text>
       </div>
       <animated.div
         style={{

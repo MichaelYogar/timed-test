@@ -7,6 +7,7 @@ import { options } from "../auth/[...nextauth]/nextAuthOptions";
 
 export async function GET(req: NextRequest, res: NextApiResponse) {
   const userId = Number(getQSParamFromURL("userId", req.url));
+  console.log(userId);
 
   const interviews = await prisma.interview.findMany({
     where: {
