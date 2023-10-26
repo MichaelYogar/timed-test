@@ -36,7 +36,7 @@ export const Tree = ({
   return (
     <div>
       <div className="flex items-center">
-        <Icon
+        <div
           onClick={() => setOpen((prev) => !prev)}
           style={{
             height: "1em",
@@ -45,7 +45,9 @@ export const Tree = ({
             cursor: `${children ? "pointer " : null}`,
             verticalAlign: "middle",
           }}
-        />
+        >
+          <Icon />
+        </div>
         <Text size="4">{content}</Text>
       </div>
       <animated.div
