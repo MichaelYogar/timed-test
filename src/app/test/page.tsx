@@ -1,10 +1,8 @@
 "use client";
-
-import { useSpring, animated } from "@react-spring/web";
-import { memo, useState } from "react";
-import { useEffect, useRef } from "react";
-import useMeasure from "react-use-measure";
+import { useEffect, useRef, useState } from "react";
 import * as Icons from "./icons";
+import { a, useSpring, animated } from "@react-spring/web";
+import useMeasure from "react-use-measure";
 
 function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -12,77 +10,65 @@ function usePrevious<T>(value: T) {
   return ref.current;
 }
 
-const Frame = ({ children }) => {
-  return (
-    <div
-      className="
-        relative 
-        py-1 
-        truncate 
-        align-middle 
-        text-gray-900
-      "
-    >
-      {children}
-    </div>
-  );
-};
-
-const Tree = memo<
-  React.HTMLAttributes<HTMLDivElement> & {
-    defaultOpen?: boolean;
-    name: string | JSX.Element;
-  }
->(function Greeting({ children, name, style, defaultOpen = false }) {
-  const [isOpen, setOpen] = useState(defaultOpen);
-  const previous = usePrevious(isOpen);
+const Page = () => {
+  const [open, setOpen] = useState(false);
+  const previous = usePrevious(open);
   const [ref, { height: viewHeight }] = useMeasure();
   const { height, opacity, y } = useSpring({
     from: { height: 0, opacity: 0, y: 0 },
     to: {
-      height: isOpen ? viewHeight : 0,
-      opacity: isOpen ? 1 : 0,
-      y: isOpen ? 0 : 20,
+      height: open ? viewHeight : 0,
+      opacity: open ? 1 : 0,
+      y: open ? 0 : 20,
     },
   });
-  const Icon =
-    Icons[`${children ? (isOpen ? "Minus" : "Plus") : "Close"}SquareO`];
 
-  <Frame>
-    <div onClick={() => setOpen(!isOpen)}>
-      <Icon />
-    </div>
-  </Frame>;
-
-  return <h1>Hello, {name}!</h1>;
-});
-
-export default function MyComponent() {
-  const [springs, api] = useSpring(() => ({
-    from: { x: 0 },
-  }));
-
-  const handleClick = () => {
-    api.start({
-      from: {
-        x: 0,
-      },
-      to: {
-        x: 100,
-      },
-    });
-  };
+  const Icon = Icons[`${open ? "Minus" : "Plus"}SquareO`];
 
   return (
-    <animated.div
-      onClick={handleClick}
-      style={{
-        width: 80,
-        height: 80,
-        background: "#ff6d6d",
-        borderRadius: 8,
-        ...springs,
-      }}
-    />
+    <div className="w-[100px]">
+      <div className="flex items-center">
+        <Icon
+          onClick={() => setOpen((prev) => !prev)}
+          style={{
+            height: "1em",
+            width: "1em",
+            marginRight: 10,
+            cursor: "pointer",
+            verticalAlign: "middle",
+          }}
+        />
+        <span>Main</span>
+      </div>
+      <animated.div
+        style={{
+          opacity,
+          height: open && previous === open ? "auto" : height,
+          willChange: "transform, opacity, height",
+          marginLeft: "6px",
+          padding: "0px 0px 0px 14px",
+          borderLeft: "1px dashed rgba(255, 255, 255, 0.4)",
+          overflow: "hidden",
+        }}
+      >
+        <a.div ref={ref} style={{ y }}>
+          <div className="flex items-center">
+            <Icon
+              onClick={() => setOpen((prev) => !prev)}
+              style={{
+                height: "1em",
+                width: "1em",
+                marginRight: 10,
+                cursor: "pointer",
+                verticalAlign: "middle",
+              }}
+            />
+            <span>Main 2</span>
+          </div>
+        </a.div>
+      </animated.div>
+    </div>
   );
-}
+};
+
+export default Page;
