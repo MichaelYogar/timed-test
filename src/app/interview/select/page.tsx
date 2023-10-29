@@ -46,7 +46,7 @@ const Page = () => {
 
   return (
     <div>
-      <NavBar user={session?.data?.user.name} />
+      <NavBar username={session?.data?.user.name} />
       <div
         style={{ gridTemplateRows: "1fr auto" }}
         className="grid sm:grid-cols-2 sm:justify-items-center"
