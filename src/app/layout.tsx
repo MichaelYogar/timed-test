@@ -3,10 +3,7 @@ import "@radix-ui/themes/styles.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import AuthProvider from "../context/AuthProvider";
-import { NavBar } from "../components/ui/Navbar";
-import { getServerSession } from "next-auth";
-import { options } from "./api/auth/[...nextauth]/nextAuthOptions";
-import { Container, Text, Theme } from "@radix-ui/themes";
+import { Theme } from "@radix-ui/themes";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,8 +18,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className}`}>
+    <html className="w-screen" lang="en">
+      <body className={`${inter.className} overflow-x-hidden`}>
         <AuthProvider>
           <Theme>
             <div className="flex flex-col items-center">
