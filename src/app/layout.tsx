@@ -21,13 +21,7 @@ export default async function RootLayout({
     <html className="w-screen" lang="en">
       <body className={`${inter.className} overflow-x-hidden`}>
         <AuthProvider>
-          <Theme>
-            <div className="flex flex-col items-center">
-              <div className="w-[80%] max-w-[1024px]">
-                <>{children}</>
-              </div>
-            </div>
-          </Theme>
+          <Theme>{children}</Theme>
         </AuthProvider>
       </body>
     </html>

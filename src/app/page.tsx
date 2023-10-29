@@ -10,28 +10,32 @@ const Page = async () => {
   const session = await getServerSession(options);
 
   return (
-    <div>
-      <NavBar user={session?.user.name} />
-      <div className="flex h-screen items-center mt-[-65px] gap-2 m-4">
-        <article className="flex flex-col sm:basis-2/3  prose prose-sm md:prose prose-neutral prose-a:text-blue-600">
-          <Text mb="2" weight="bold" size="9">
-            Practice makes{" "}
-            <Text as="span" style={{ color: "rgb(85,162,133)" }}>
-              perfect
+    <div className="flex flex-col items-center">
+      <div className="w-[80%] max-w-[1024px]">
+        <NavBar username={session?.user.name} />
+        <div className="flex h-screen items-center mt-[-65px] gap-2 m-4">
+          <article className="flex flex-col sm:basis-2/3  prose prose-sm md:prose prose-neutral prose-a:text-blue-600">
+            <Text mb="2" weight="bold" size="9">
+              Practice makes{" "}
+              <Text as="span" style={{ color: "rgb(85,162,133)" }}>
+                perfect
+              </Text>
             </Text>
-          </Text>
-          <Text mb="2" size="4">
-            Practice time based mock tests created{" "}
-            <span className="underline underline-offset-2">by you for you</span>
-          </Text>
-          <Link className="w-fit" href="/interview/select">
-            <Button color="green" size="3" variant="solid">
-              Try Demo
-            </Button>
-          </Link>
-        </article>
-        <div className="basis-1/3 invisible sm:visible">
-          <Image style={{ borderRadius: "25%" }} src={coffee} alt="" />
+            <Text mb="2" size="4">
+              Practice time based mock tests created{" "}
+              <span className="underline underline-offset-2">
+                by you for you
+              </span>
+            </Text>
+            <Link className="w-fit" href="/interview/select">
+              <Button color="green" size="3" variant="solid">
+                Try Demo
+              </Button>
+            </Link>
+          </article>
+          <div className="basis-1/3 invisible sm:visible">
+            <Image style={{ borderRadius: "25%" }} src={coffee} alt="" />
+          </div>
         </div>
       </div>
     </div>

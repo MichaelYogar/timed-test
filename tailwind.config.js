@@ -23,7 +23,20 @@ module.exports = {
           },
         },
       },
+      gridTemplateAreas: {
+        layout: ["header header", "sidebar main", "sidebar main"],
+      },
+      gridTemplateColumns: {
+        layout: "15% 1fr",
+      },
+      gridTemplateRows: {
+        layout: "2.5rem auto",
+      },
     },
   },
-  plugins: [require("@tailwindcss/typography"), require("tailwindcss-animate")],
+  plugins: [
+    require("@tailwindcss/typography"),
+    require("tailwindcss-animate"),
+    require("@savvywombat/tailwindcss-grid-areas"),
+  ],
 };
