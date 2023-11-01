@@ -54,19 +54,9 @@ export const SelectInterviewForm = ({ data }: { data: any }) => {
             </span>
           );
         })}
-        <div className="grid grid-cols-2">
-          <div>
-            <Button>Start</Button>
-            <div>{errors.id?.message}</div>
-          </div>
-          <div className="inline-block">
-            <Button
-              type="button"
-              onClick={() => router.push("/interview/create")}
-            >
-              Create Test
-            </Button>
-          </div>
+        <div>
+          <Button>Start</Button>
+          <div>{errors.id?.message}</div>
         </div>
       </form>
     </div>

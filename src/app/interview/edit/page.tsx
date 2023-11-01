@@ -2,13 +2,13 @@
 
 import { INTERVIEW_ROUTE } from "@/src/lib/routes";
 import { getUrlWithQueryParams as createUrlWithQueryString } from "@/src/lib/utils";
-import { Card } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import useSWR, { mutate } from "swr";
 import { Prisma } from "@prisma/client";
+import { InterviewTable } from "./InterviewTable";
+import { useEffect, useState } from "react";
 
 const interviewWithQuestions = Prisma.validator<Prisma.InterviewDefaultArgs>()({
   include: { questions: true },
@@ -37,6 +37,7 @@ const Page = () => {
   const [interview, setInterview] = useState<InterviewWithQuestions | null>(
     null
   );
+  const [selectedRowId, setSelectedRowId] = useState({});
 
   const {
     register,
@@ -57,10 +58,12 @@ const Page = () => {
     () => fetcher(session.data?.user.id)
   );
 
+  useEffect(() => {
+    if (data && data.length > 0) setInterview(data[0]);
+  }, [data]);
+
   if (error) return <div>{error}</div>;
   if (isLoading) return <></>;
-
-  console.log(interview);
 
   return (
     <div style={{ gridTemplateColumns: "20% 1fr" }} className="grid h-full">
@@ -78,14 +81,11 @@ const Page = () => {
           })}
       </div>
       <div className="grid grid-cols-1 justify-items-center items-center">
-        {!interview ? (
-          <p>Card</p>
-        ) : (
-          <Card>
-            {interview.questions.map((field, id) => {
-              return <div key={id}>{field.content}</div>;
-            })}
-          </Card>
+        {interview && (
+          <InterviewTable
+            data={interview.questions}
+            onRowSelectStateChange={setSelectedRowId}
+          />
         )}
       </div>
     </div>

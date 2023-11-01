@@ -1,12 +1,12 @@
 "use client";
 import { SelectInterviewForm } from "@/src/components/SelectInterviewForm";
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { getUrlWithQueryParams as createUrlWithQueryString } from "@/src/lib/utils";
 import { INTERVIEW_ROUTE } from "@/src/lib/routes";
 import useSWR, { mutate } from "swr";
 import { useSession } from "next-auth/react";
-import { ViewInterview } from "@/src/components/ViewInterview";
+import { Button } from "@/src/components/ui/Button";
 
 const fetcher = async (userId): Promise<any[]> => {
   const queryParams = userId ? { userId: userId } : {};
@@ -23,6 +23,7 @@ const fetcher = async (userId): Promise<any[]> => {
 const Page = () => {
   const session = useSession();
   const pathName = usePathname();
+  const router = useRouter();
   const key = `/page/${pathName}`;
 
   useEffect(() => {
@@ -43,10 +44,18 @@ const Page = () => {
   return (
     <div
       style={{ gridTemplateRows: "1fr auto" }}
-      className="grid sm:grid-cols-2 sm:justify-items-center"
+      className="grid grid-cols-1 justify-items-center  h-full"
     >
-      <SelectInterviewForm data={data} />
-      <ViewInterview data={data} />
+      {data && data.length > 0 ? (
+        <SelectInterviewForm data={data} />
+      ) : (
+        <div className="h-full flex flex-col justify-center items-center">
+          <p>No tests</p>
+          <Button onClick={() => router.push("/interview/create")}>
+            Create new test!
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
