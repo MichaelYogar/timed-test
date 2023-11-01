@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 import { Button } from "../ui/Button";
 import { SimpleTimer } from "../SimpleTimer";
 import { Text } from "@radix-ui/themes";
+import { parseDuration } from "@/src/lib/utils";
 
 const VideoRecording = dynamic(
   () =>
@@ -87,14 +88,3 @@ export const Question: React.FC<QuestionProps> = ({
     </div>
   );
 };
-
-function parseDuration(milliseconds: number) {
-  const totalSeconds = Math.floor(milliseconds / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-
-  return {
-    minutes: minutes,
-    seconds: seconds,
-  };
-}

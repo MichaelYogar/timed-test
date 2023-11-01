@@ -16,3 +16,14 @@ export const getUrlWithQueryParams = (url: string, params: Params) => {
   const newUrl = url.endsWith("/") ? url : url + "/";
   return newUrl + "?" + new URLSearchParams(params);
 };
+
+export const parseDuration = (milliseconds: number) => {
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return {
+    minutes: minutes,
+    seconds: seconds,
+  };
+};
