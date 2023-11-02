@@ -61,7 +61,7 @@ export const InterviewTable = ({ data, onRowSelectStateChange }) => {
     ],
     []
   );
-  const { getState, ...table } = useReactTable({
+  const { getState, reset, ...table } = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -70,11 +70,11 @@ export const InterviewTable = ({ data, onRowSelectStateChange }) => {
 
   useEffect(() => {
     onRowSelectStateChange(getState().rowSelection);
-  }, [onRowSelectStateChange, getState()]);
+  }, [getState()]);
 
   useEffect(() => {
-    table.toggleAllRowsSelected(false);
-  }, [data]);
+    reset();
+  }, [reset, data]);
 
   return (
     <div style={{ gridTemplateColumns: "1fr" }} className="grid h-full">

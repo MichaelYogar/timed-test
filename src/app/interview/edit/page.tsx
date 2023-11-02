@@ -37,8 +37,7 @@ const Page = () => {
   const [interview, setInterview] = useState<InterviewWithQuestions | null>(
     null
   );
-  const [selectedRowId, setSelectedRowId] = useState({});
-
+  const [row, setRow] = useState({});
   const {
     register,
     handleSubmit,
@@ -65,28 +64,40 @@ const Page = () => {
   if (error) return <div>{error}</div>;
   if (isLoading) return <></>;
 
+  const handleEdit = () => {
+    const keys = Object.keys(row);
+    if (keys.length > 1) console.log("Should only be one key");
+    const rowId = Number(keys[0]);
+    consolelog(rowId);
+  };
+
   return (
-    <div style={{ gridTemplateColumns: "20% 1fr" }} className="grid h-full">
-      <div className="border-r-2 border-black">
-        {data &&
-          data.length > 0 &&
-          data.map((field, id) => {
-            return (
-              <div key={id}>
-                <button onClick={() => setInterview(field)}>
-                  {field.title}
-                </button>
-              </div>
-            );
-          })}
+    <div className="h-full">
+      <div className="w-full justify-items-center items-center grid grid-cols-2 border-gray-100 border-b-[1px] py-2">
+        <div>Create Test Form</div>
       </div>
-      <div className="grid grid-cols-1 justify-items-center items-center">
-        {interview && (
-          <InterviewTable
-            data={interview.questions}
-            onRowSelectStateChange={setSelectedRowId}
-          />
-        )}
+      <div style={{ gridTemplateColumns: "20% 1fr" }} className="grid h-full">
+        <div className="border-r-2 border-black">
+          {data &&
+            data.length > 0 &&
+            data.map((field, id) => {
+              return (
+                <div key={id}>
+                  <button onClick={() => setInterview(field)}>
+                    {field.title}
+                  </button>
+                </div>
+              );
+            })}
+        </div>
+        <div className="grid grid-cols-1 justify-items-center items-center">
+          {interview && (
+            <InterviewTable
+              data={interview.questions}
+              onRowSelectStateChange={setRow}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
