@@ -18,8 +18,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className}`}>
+    <html className="w-screen" lang="en">
+      <body className={`${inter.className} overflow-x-hidden`}>
         <AuthProvider>
           <Theme>
             <div className="flex flex-col items-center">

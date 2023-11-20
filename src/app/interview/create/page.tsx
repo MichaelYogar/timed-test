@@ -5,14 +5,14 @@ import { getUrlWithQueryParams } from "@/src/lib/utils";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Yup from "../../../lib/yup-extended";
-import { PlusIcon, MinusIcon } from "@radix-ui/react-icons";
+import { CheckIcon, PlusCircledIcon, TrashIcon } from "@radix-ui/react-icons";
 
 import { Interview } from "@prisma/client";
 import useSWR, { mutate } from "swr";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/src/components/ui/Button";
 import { INTERVIEW_ROUTE } from "@/src/lib/routes";
+import { Button, Card } from "@radix-ui/themes";
 
 const MIN_VALUE = 1;
 const MAX_VALUE = 5;
@@ -156,33 +156,35 @@ const Page = () => {
   if (error) return <div className="">{error}</div>;
 
   return (
-    <div className="container my-2">
-      <div className="flex flex-col items-center my-10">
-        <form
-          style={{ margin: "0 auto" }}
-          className="sm:w-[40%]"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <label htmlFor="title">Interview Name</label>
-          <input id="title" {...register("title")} />
-          {fields.map((field, id) => {
-            return (
-              <div key={field.id}>
-                <div className="flex flex-row gap-2">
-                  <div className="basis-1/2">
-                    <label htmlFor={`questions.${id}.question`}>
-                      Question:
-                    </label>
-                    <input
-                      id={`questions.${id}.question`}
-                      {...register(`questions.${id}.question`)}
-                    />
-                    <p>
-                      {errors.questions &&
-                        errors.questions[id]?.question?.message}
-                    </p>
-                  </div>
-                  <div className="basis-1/4">
+    <div className="grid gird-cols-1 justify-items-center">
+      <div className="w-full justify-items-center items-center grid grid-cols-2 border-gray-100 border-b-[1px] py-2">
+        <div>Create Test Form</div>
+        <div>
+          <Button form="form1" radius="medium" variant="outline">
+            Save <CheckIcon width="16" height="16" />
+          </Button>
+        </div>
+      </div>
+      <form id="form1" className="px-[25%]" onSubmit={handleSubmit(onSubmit)}>
+        <label htmlFor="title">Title</label>
+        <input id="title" {...register("title")} />
+        {fields.map((field, id) => {
+          return (
+            <Card className="my-2" key={field.id}>
+              <div className="grid grid-rows-2">
+                <div>
+                  <label htmlFor={`questions.${id}.question`}>Question:</label>
+                  <input
+                    id={`questions.${id}.question`}
+                    {...register(`questions.${id}.question`)}
+                  />
+                  <p>
+                    {errors.questions &&
+                      errors.questions[id]?.question?.message}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-1">
+                  <div>
                     <label htmlFor={`questions.${id}.minutes`}>Minutes: </label>
                     <input
                       id={`questions.${id}.minutes`}
@@ -193,7 +195,7 @@ const Page = () => {
                         errors.questions[id]?.minutes?.message}
                     </p>
                   </div>
-                  <div className="basis-1/4">
+                  <div>
                     <label htmlFor={`questions.${id}.seconds`}>Seconds: </label>
                     <input
                       id={`questions.${id}.seconds`}
@@ -205,25 +207,24 @@ const Page = () => {
                     </p>
                   </div>
                 </div>
-                <div>
-                  <p>{errors.questions && errors.questions[id]?.message}</p>
-                </div>
-                <div className="inline-block">
-                  <button type="button" onClick={handleAdd}>
-                    <PlusIcon />
-                  </button>
-                  {id > 0 && (
-                    <button type="button" onClick={() => handleRemove(id)}>
-                      <MinusIcon />
-                    </button>
-                  )}
-                </div>
               </div>
-            );
-          })}
-          <Button>Submit</Button>
-        </form>
-      </div>
+              <div>
+                <p>{errors.questions && errors.questions[id]?.message}</p>
+              </div>
+              <div className="inline-block float-right">
+                <button type="button" onClick={handleAdd}>
+                  <PlusCircledIcon />
+                </button>
+                {id > 0 && (
+                  <button type="button" onClick={() => handleRemove(id)}>
+                    <TrashIcon />
+                  </button>
+                )}
+              </div>
+            </Card>
+          );
+        })}
+      </form>
     </div>
   );
 };
