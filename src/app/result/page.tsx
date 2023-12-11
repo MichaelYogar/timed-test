@@ -14,7 +14,7 @@ const Page = () => {
         <div className="border-black border-solid border-2 p-4 rounded-sm">
           <h1>Finished!</h1>
           <p>
-            Email feedback:
+            Email feedback: {" "}
             <a href="mailto:someone@example.com">
               <Button>michaelyogar878@gmail.com</Button>
             </a>
